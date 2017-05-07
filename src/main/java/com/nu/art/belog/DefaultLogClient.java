@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
-package com.nu.art.belogged;
+package com.nu.art.belog;
 
-import com.nu.art.belogged.BeLogged.LogEntry;
+import com.nu.art.belog.BeLogged.LogEntry;
 
 /**
  * Created by TacB0sS on 28-Feb 2017.

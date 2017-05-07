@@ -17,10 +17,9 @@
  * limitations under the License.
  */
 
-package com.nu.art.belogged;
+package com.nu.art.belog;
 
-import com.nu.art.belogged.consts.LogLevel;
-import com.nu.art.software.core.interfaces.ILogger;
+import com.nu.art.core.interfaces.ILogger;
 
 /**
  * Created by TacB0sS on 27-Feb 2017.
@@ -48,22 +47,22 @@ public class Logger
 	 */
 	@Override
 	public void logVerbose(String verbose) {
-		beLogged.log(LogLevel.Verbose, tag, verbose, null);
+		beLogged.log(com.nu.art.belog.consts.LogLevel.Verbose, tag, verbose, null);
 	}
 
 	@Override
 	public void logVerbose(String verbose, Object... params) {
-		beLogged.log(LogLevel.Verbose, tag, String.format(verbose, params), null);
+		beLogged.log(com.nu.art.belog.consts.LogLevel.Verbose, tag, String.format(verbose, params), null);
 	}
 
 	@Override
 	public void logVerbose(Throwable e) {
-		beLogged.log(LogLevel.Verbose, tag, "", e);
+		beLogged.log(com.nu.art.belog.consts.LogLevel.Verbose, tag, "", e);
 	}
 
 	@Override
 	public void logVerbose(String verbose, Throwable e) {
-		beLogged.log(LogLevel.Verbose, tag, verbose, e);
+		beLogged.log(com.nu.art.belog.consts.LogLevel.Verbose, tag, verbose, e);
 	}
 
 	/*
@@ -71,22 +70,22 @@ public class Logger
 	 */
 	@Override
 	public void logDebug(String debug) {
-		beLogged.log(LogLevel.Debug, tag, debug, null);
+		beLogged.log(com.nu.art.belog.consts.LogLevel.Debug, tag, debug, null);
 	}
 
 	@Override
 	public void logDebug(String debug, Object... params) {
-		beLogged.log(LogLevel.Debug, tag, String.format(debug, params), null);
+		beLogged.log(com.nu.art.belog.consts.LogLevel.Debug, tag, String.format(debug, params), null);
 	}
 
 	@Override
 	public void logDebug(Throwable e) {
-		beLogged.log(LogLevel.Debug, tag, "", e);
+		beLogged.log(com.nu.art.belog.consts.LogLevel.Debug, tag, "", e);
 	}
 
 	@Override
 	public void logDebug(String debug, Throwable e) {
-		beLogged.log(LogLevel.Debug, tag, debug, e);
+		beLogged.log(com.nu.art.belog.consts.LogLevel.Debug, tag, debug, e);
 	}
 
 	/*
@@ -94,22 +93,22 @@ public class Logger
 	 */
 	@Override
 	public void logInfo(String info) {
-		beLogged.log(LogLevel.Info, tag, info, null);
+		beLogged.log(com.nu.art.belog.consts.LogLevel.Info, tag, info, null);
 	}
 
 	@Override
 	public void logInfo(String info, Object... params) {
-		beLogged.log(LogLevel.Info, tag, String.format(info, params), null);
+		beLogged.log(com.nu.art.belog.consts.LogLevel.Info, tag, String.format(info, params), null);
 	}
 
 	@Override
 	public void logInfo(Throwable e) {
-		beLogged.log(LogLevel.Info, tag, "", e);
+		beLogged.log(com.nu.art.belog.consts.LogLevel.Info, tag, "", e);
 	}
 
 	@Override
 	public void logInfo(String info, Throwable e) {
-		beLogged.log(LogLevel.Info, tag, info, e);
+		beLogged.log(com.nu.art.belog.consts.LogLevel.Info, tag, info, e);
 	}
 
 	/*
@@ -117,22 +116,22 @@ public class Logger
 	 */
 	@Override
 	public void logWarning(String warning) {
-		beLogged.log(LogLevel.Warning, tag, warning, null);
+		beLogged.log(com.nu.art.belog.consts.LogLevel.Warning, tag, warning, null);
 	}
 
 	@Override
 	public void logWarning(String warning, Object... params) {
-		beLogged.log(LogLevel.Warning, tag, String.format(warning, params), null);
+		beLogged.log(com.nu.art.belog.consts.LogLevel.Warning, tag, String.format(warning, params), null);
 	}
 
 	@Override
 	public void logWarning(Throwable e) {
-		beLogged.log(LogLevel.Warning, tag, "", e);
+		beLogged.log(com.nu.art.belog.consts.LogLevel.Warning, tag, "", e);
 	}
 
 	@Override
 	public void logWarning(String warning, Throwable e) {
-		beLogged.log(LogLevel.Warning, tag, warning, e);
+		beLogged.log(com.nu.art.belog.consts.LogLevel.Warning, tag, warning, e);
 	}
 
 	/*
@@ -140,21 +139,21 @@ public class Logger
 	 */
 	@Override
 	public void logError(String error) {
-		beLogged.log(LogLevel.Error, tag, error, null);
+		beLogged.log(com.nu.art.belog.consts.LogLevel.Error, tag, error, null);
 	}
 
 	@Override
 	public void logError(String error, Object... params) {
-		beLogged.log(LogLevel.Error, tag, String.format(error, params), null);
+		beLogged.log(com.nu.art.belog.consts.LogLevel.Error, tag, String.format(error, params), null);
 	}
 
 	@Override
 	public void logError(String error, Throwable e) {
-		beLogged.log(LogLevel.Error, tag, error, e);
+		beLogged.log(com.nu.art.belog.consts.LogLevel.Error, tag, error, e);
 	}
 
 	@Override
 	public void logError(Throwable e) {
-		beLogged.log(LogLevel.Error, tag, "", e);
+		beLogged.log(com.nu.art.belog.consts.LogLevel.Error, tag, "", e);
 	}
 }

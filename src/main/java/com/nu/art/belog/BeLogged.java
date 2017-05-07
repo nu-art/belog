@@ -16,16 +16,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.nu.art.belogged;
+package com.nu.art.belog;
 
-import com.nu.art.belogged.BeLogged.LogEntry;
-import com.nu.art.belogged.consts.LogLevel;
-import com.nu.art.software.core.interfaces.ILogger;
-import com.nu.art.software.core.tools.ArrayTools;
-import com.nu.art.software.core.utils.InstanceRecycler;
-import com.nu.art.software.core.utils.InstanceRecycler.Instantiator;
-import com.nu.art.software.core.utils.PoolQueue;
-import com.nu.art.software.modular.core.Module;
+import com.nu.art.belog.BeLogged.LogEntry;
+import com.nu.art.belog.consts.LogLevel;
+import com.nu.art.core.interfaces.ILogger;
+import com.nu.art.core.tools.ArrayTools;
+import com.nu.art.core.utils.InstanceRecycler;
+import com.nu.art.core.utils.InstanceRecycler.Instantiator;
+import com.nu.art.core.utils.PoolQueue;
+import com.nu.art.modular.core.Module;
 
 public final class BeLogged
 		extends Module

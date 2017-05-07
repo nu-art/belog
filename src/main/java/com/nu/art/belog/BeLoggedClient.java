@@ -16,12 +16,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.nu.art.belogged;
+package com.nu.art.belog;
 
-import com.nu.art.belogged.BeLogged.LogEntry;
-import com.nu.art.belogged.consts.LogLevel;
-import com.nu.art.belogged.interfaces.LogComposer;
-import com.nu.art.software.modular.core.ModuleItem;
+import com.nu.art.belog.BeLogged.LogEntry;
+import com.nu.art.belog.consts.LogLevel;
+import com.nu.art.belog.interfaces.LogComposer;
+import com.nu.art.modular.core.ModuleItem;
 
 public abstract class BeLoggedClient
 		extends ModuleItem {

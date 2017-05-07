@@ -16,15 +16,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.nu.art.belog.consts;
 
-package com.nu.art.belogged.interfaces;
-
-import com.nu.art.belogged.BeLogged.LogEntry;
-
-/**
- * Created by TacB0sS on 27-Feb 2017.
- */
-public interface LogComposer {
-
-	String composeEntry(LogEntry logEntry);
+public enum LogLevel {
+	Verbose,
+	Debug,
+	Info,
+	Warning,
+	Error,
+	Assert
 }

@@ -17,11 +17,10 @@
  * limitations under the License.
  */
 
-package com.nu.art.belogged;
+package com.nu.art.belog;
 
-import com.nu.art.belogged.BeLogged.LogEntry;
-import com.nu.art.belogged.interfaces.LogComposer;
-import com.nu.art.software.core.tools.ExceptionTools;
+import com.nu.art.belog.BeLogged.LogEntry;
+import com.nu.art.core.tools.ExceptionTools;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -30,7 +29,7 @@ import java.util.Date;
  * Created by TacB0sS on 27-Feb 2017.
  */
 public class DefaultLogComposer
-		implements LogComposer {
+		implements com.nu.art.belog.interfaces.LogComposer {
 
 	public final static SimpleDateFormat DefaultTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZ");
 

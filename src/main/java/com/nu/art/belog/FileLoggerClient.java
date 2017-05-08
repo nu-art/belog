@@ -42,7 +42,7 @@ public class FileLoggerClient
 
 	private int filesCount;
 
-	private boolean enable;
+	private boolean enable = true;
 
 	private OutputStreamWriter logWriter;
 
@@ -79,7 +79,7 @@ public class FileLoggerClient
 				disable(e);
 				return;
 			}
-
+			written = logFile.length();
 			createLogWriter(logFile);
 		}
 	}

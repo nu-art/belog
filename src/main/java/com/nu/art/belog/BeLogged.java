@@ -57,6 +57,9 @@ public final class BeLogged
 	@Override
 	protected void init() {
 		runnableQueue.createThreads("BeLogged", 1);
+		for (BeLoggedClient client : clients) {
+			client.init();
+		}
 	}
 
 	public final void addClient(BeLoggedClient logClient) {

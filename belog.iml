@@ -31,6 +31,8 @@
     <orderEntry type="module" module-name="reflection" exported="" />
     <orderEntry type="module" module-name="nu-art-core" exported="" />
     <orderEntry type="library" exported="" name="belog.belog-1.0.0" level="project" />
+    <orderEntry type="library" exported="" name="belog.belog-1.0.0-src" level="project" />
+    <orderEntry type="library" exported="" name="belog.belog-1.0.0-doc" level="project" />
     <orderEntry type="library" exported="" name="belog.belog-1.0.0" level="project" />
     <orderEntry type="library" exported="" name="belog.belog-1.0.0" level="project" />
     <orderEntry type="library" exported="" name="belog.belog-1.0.0" level="project" />

@@ -30,18 +30,18 @@ dependencies {
     compile project(':module-manager')
 }
 
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            def finalPath = 'file://' + LocalMavenRepoPath.toString()
-            repository url: finalPath
-            pom.groupId = group
-            pom.artifactId = artifact
-            pom.version = version
-            pom.packaging = 'jar'
-        }
-    }
-}
+//uploadArchives {
+//    repositories {
+//        mavenDeployer {
+//            def finalPath = 'file://' + LocalMavenRepoPath.toString()
+//            repository url: finalPath
+//            pom.groupId = group
+//            pom.artifactId = artifact
+//            pom.version = version
+//            pom.packaging = 'jar'
+//        }
+//    }
+//}
 
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'

@@ -176,7 +176,7 @@ public class FileLoggerClient
 		return toRet;
 	}
 
-	public final File[] zipAllLogs()
+	public final File[] getAllLogFiles()
 			throws IOException {
 		List<File> filesToZip = new ArrayList<>();
 		for (int i = 0; i < filesCount; i++) {

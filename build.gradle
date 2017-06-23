@@ -1,6 +1,5 @@
 /*
- * belog is an extendable infrastructure to manage and customize
- * your application output.
+ * The core of the core of all my projects!
  *
  * Copyright (C) 2017  Adam van der Kruk aka TacB0sS
  *
@@ -17,49 +16,13 @@
  * limitations under the License.
  */
 
-def group = 'com.nu.art.core'
-def artifact = 'belog'
-def version = '1.0.0'
 apply plugin: 'java'
-apply plugin: 'maven'
 
-sourceCompatibility = JavaVersion.VERSION_1_7
-targetCompatibility = JavaVersion.VERSION_1_7
-
-dependencies {
-    compile project(':module-manager')
+tasks.withType(JavaCompile) {
+    sourceCompatibility = JavaVersion.VERSION_1_7
+    targetCompatibility = JavaVersion.VERSION_1_7
 }
 
-//uploadArchives {
-//    repositories {
-//        mavenDeployer {
-//            def finalPath = 'file://' + LocalMavenRepoPath.toString()
-//            repository url: finalPath
-//            pom.groupId = group
-//            pom.artifactId = artifact
-//            pom.version = version
-//            pom.packaging = 'jar'
-//        }
-//    }
-//}
-
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
-    archiveName = artifact + "-" + version + "-src.jar"
-    from sourceSets.main.allSource
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    archiveName = artifact + "-" + version + "-doc.jar"
-    from javadoc.destinationDir
-}
-
-jar {
-    archiveName = artifact + "-" + version + ".jar"
-}
-
-artifacts {
-    archives sourcesJar
-    archives javadocJar
-}
+if (project.hasProperty("configureUploadJavaArtifact")) {
+    configureUploadJavaArtifact("com.nu-art-software",  "nu-art/${name}")
+};

@@ -57,16 +57,11 @@ public final class BeLogged
 		}
 	};
 
-	private BeLogged() {}
+	private BeLogged() {
+		runnableQueue.createThreads("BeLogged", 1);
+	}
 
 	private BeLoggedClient[] clients = {};
-
-	protected void init() {
-		runnableQueue.createThreads("BeLogged", 1);
-		for (BeLoggedClient client : clients) {
-			client.init();
-		}
-	}
 
 	public final void addClient(BeLoggedClient logClient) {
 		clients = ArrayTools.appendElement(clients, logClient);

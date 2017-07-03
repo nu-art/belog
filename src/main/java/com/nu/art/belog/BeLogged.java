@@ -25,11 +25,18 @@ import com.nu.art.core.tools.ArrayTools;
 import com.nu.art.core.utils.InstanceRecycler;
 import com.nu.art.core.utils.InstanceRecycler.Instantiator;
 import com.nu.art.core.utils.PoolQueue;
-import com.nu.art.modular.core.Module;
 
 public final class BeLogged
-		extends Module
 		implements Instantiator<LogEntry> {
+
+	private static BeLogged INSTANCE;
+
+	public static synchronized BeLogged getInstance() {
+		if (INSTANCE == null)
+			INSTANCE = new BeLogged();
+
+		return INSTANCE;
+	}
 
 	private InstanceRecycler<LogEntry> recycler = new InstanceRecycler<>(this);
 
@@ -54,7 +61,6 @@ public final class BeLogged
 
 	private BeLoggedClient[] clients = {};
 
-	@Override
 	protected void init() {
 		runnableQueue.createThreads("BeLogged", 1);
 		for (BeLoggedClient client : clients) {
@@ -64,10 +70,12 @@ public final class BeLogged
 
 	public final void addClient(BeLoggedClient logClient) {
 		clients = ArrayTools.appendElement(clients, logClient);
+		logClient.init();
 	}
 
 	public final void removeClient(BeLoggedClient logClient) {
 		clients = ArrayTools.removeElement(clients, logClient);
+		logClient.dispose();
 	}
 
 	final void log(final LogLevel level, final String tag, final String message, final Throwable t) {
@@ -86,7 +94,7 @@ public final class BeLogged
 			tag = (String) objectForTag;
 		else
 			tag = objectForTag.getClass().getSimpleName();
-		return new Logger().setBeLogged(this).setTag(tag);
+		return new Logger().setTag(tag);
 	}
 
 	public class LogEntry {

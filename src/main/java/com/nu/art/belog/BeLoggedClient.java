@@ -21,10 +21,8 @@ package com.nu.art.belog;
 import com.nu.art.belog.BeLogged.LogEntry;
 import com.nu.art.belog.consts.LogLevel;
 import com.nu.art.belog.interfaces.LogComposer;
-import com.nu.art.modular.core.ModuleItem;
 
-public abstract class BeLoggedClient
-		extends ModuleItem {
+public abstract class BeLoggedClient {
 
 	private LogComposer composer = new DefaultLogComposer();
 
@@ -36,9 +34,7 @@ public abstract class BeLoggedClient
 		this.composer = composer;
 	}
 
-	@Override
-	protected void init() {
-	}
+	protected void init() { }
 
 	public final void setLogLevel(LogLevel minLogLevel, LogLevel maxLogLevel) {
 		this.minLogLevel = minLogLevel;
@@ -57,4 +53,6 @@ public abstract class BeLoggedClient
 	protected boolean isLoggable(LogLevel level) {
 		return level.ordinal() >= minLogLevel.ordinal() && level.ordinal() <= maxLogLevel.ordinal();
 	}
+
+	protected void dispose() {}
 }

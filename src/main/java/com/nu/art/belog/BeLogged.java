@@ -24,7 +24,6 @@ import com.nu.art.core.interfaces.ILogger;
 import com.nu.art.core.tools.ArrayTools;
 import com.nu.art.core.utils.InstanceRecycler;
 import com.nu.art.core.utils.InstanceRecycler.Instantiator;
-import com.nu.art.core.utils.PoolQueue;
 
 public final class BeLogged
 		implements Instantiator<LogEntry> {
@@ -40,26 +39,7 @@ public final class BeLogged
 
 	private InstanceRecycler<LogEntry> recycler = new InstanceRecycler<>(this);
 
-	private PoolQueue<LogEntry> runnableQueue = new PoolQueue<LogEntry>() {
-		@Override
-		protected void onExecutionError(LogEntry item, Throwable e) {
-			System.err.print(item);
-			e.printStackTrace();
-		}
-
-		@Override
-		protected void executeAction(LogEntry logEntry)
-				throws Exception {
-			for (BeLoggedClient client : clients) {
-				client._log(logEntry);
-			}
-			recycler.recycle(logEntry);
-		}
-	};
-
-	private BeLogged() {
-		runnableQueue.createThreads("BeLogged", 1);
-	}
+	private BeLogged() {}
 
 	private BeLoggedClient[] clients = {};
 
@@ -75,7 +55,12 @@ public final class BeLogged
 
 	final void log(final LogLevel level, final String tag, final String message, final Throwable t) {
 		final String thread = Thread.currentThread().getName();
-		runnableQueue.addItem(recycler.getInstance().set(level, thread, tag, message, t));
+		LogEntry instance = recycler.getInstance().set(level, thread, tag, message, t);
+		for (BeLoggedClient client : clients) {
+			client._log(instance);
+		}
+
+		recycler.recycle(instance);
 	}
 
 	@Override

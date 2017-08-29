@@ -19,6 +19,7 @@
 
 package com.nu.art.belog;
 
+import com.nu.art.belog.consts.LogLevel;
 import com.nu.art.core.interfaces.ILogger;
 
 import static com.nu.art.belog.consts.LogLevel.Debug;
@@ -38,7 +39,7 @@ public class Logger
 
 	private String tag = getClass().getSimpleName();
 
-	private boolean enable = true;
+	private LogLevel minLogLevel = Verbose;
 
 	protected Logger() {
 		beLogged = BeLogged.getInstance();
@@ -49,20 +50,20 @@ public class Logger
 		return this;
 	}
 
-	public void setEnable(boolean enable) {
-		this.enable = enable;
+	public void setMinLogLevel(LogLevel minLogLevel) {
+		this.minLogLevel = minLogLevel;
 	}
 
-	public boolean isEnable() {
-		return enable;
+	private boolean canLog(LogLevel logLevelToLog) {
+		return logLevelToLog.ordinal() >= minLogLevel.ordinal();
 	}
 
 	/*
-	 * VERBOSE
-	 */
+		 * VERBOSE
+		 */
 	@Override
 	public void logVerbose(String verbose) {
-		if (!enable)
+		if (!canLog(Verbose))
 			return;
 
 		beLogged.log(Verbose, tag, verbose, null);
@@ -70,7 +71,7 @@ public class Logger
 
 	@Override
 	public void logVerbose(String verbose, Object... params) {
-		if (!enable)
+		if (!canLog(Verbose))
 			return;
 
 		beLogged.log(Verbose, tag, String.format(verbose, params), null);
@@ -78,7 +79,7 @@ public class Logger
 
 	@Override
 	public void logVerbose(Throwable e) {
-		if (!enable)
+		if (!canLog(Verbose))
 			return;
 
 		beLogged.log(Verbose, tag, "", e);
@@ -86,7 +87,7 @@ public class Logger
 
 	@Override
 	public void logVerbose(String verbose, Throwable e) {
-		if (!enable)
+		if (!canLog(Verbose))
 			return;
 
 		beLogged.log(Verbose, tag, verbose, e);
@@ -97,7 +98,7 @@ public class Logger
 	 */
 	@Override
 	public void logDebug(String debug) {
-		if (!enable)
+		if (!canLog(Debug))
 			return;
 
 		beLogged.log(Debug, tag, debug, null);
@@ -105,7 +106,7 @@ public class Logger
 
 	@Override
 	public void logDebug(String debug, Object... params) {
-		if (!enable)
+		if (!canLog(Debug))
 			return;
 
 		beLogged.log(Debug, tag, String.format(debug, params), null);
@@ -113,7 +114,7 @@ public class Logger
 
 	@Override
 	public void logDebug(Throwable e) {
-		if (!enable)
+		if (!canLog(Debug))
 			return;
 
 		beLogged.log(Debug, tag, "", e);
@@ -121,7 +122,7 @@ public class Logger
 
 	@Override
 	public void logDebug(String debug, Throwable e) {
-		if (!enable)
+		if (!canLog(Debug))
 			return;
 
 		beLogged.log(Debug, tag, debug, e);
@@ -132,7 +133,7 @@ public class Logger
 	 */
 	@Override
 	public void logInfo(String info) {
-		if (!enable)
+		if (!canLog(Info))
 			return;
 
 		beLogged.log(Info, tag, info, null);
@@ -140,7 +141,7 @@ public class Logger
 
 	@Override
 	public void logInfo(String info, Object... params) {
-		if (!enable)
+		if (!canLog(Info))
 			return;
 
 		beLogged.log(Info, tag, String.format(info, params), null);
@@ -148,7 +149,7 @@ public class Logger
 
 	@Override
 	public void logInfo(Throwable e) {
-		if (!enable)
+		if (!canLog(Info))
 			return;
 
 		beLogged.log(Info, tag, "", e);
@@ -156,7 +157,7 @@ public class Logger
 
 	@Override
 	public void logInfo(String info, Throwable e) {
-		if (!enable)
+		if (!canLog(Info))
 			return;
 
 		beLogged.log(Info, tag, info, e);
@@ -167,7 +168,7 @@ public class Logger
 	 */
 	@Override
 	public void logWarning(String warning) {
-		if (!enable)
+		if (!canLog(Warning))
 			return;
 
 		beLogged.log(Warning, tag, warning, null);
@@ -175,7 +176,7 @@ public class Logger
 
 	@Override
 	public void logWarning(String warning, Object... params) {
-		if (!enable)
+		if (!canLog(Warning))
 			return;
 
 		beLogged.log(Warning, tag, String.format(warning, params), null);
@@ -183,7 +184,7 @@ public class Logger
 
 	@Override
 	public void logWarning(Throwable e) {
-		if (!enable)
+		if (!canLog(Warning))
 			return;
 
 		beLogged.log(Warning, tag, "", e);
@@ -191,7 +192,7 @@ public class Logger
 
 	@Override
 	public void logWarning(String warning, Throwable e) {
-		if (!enable)
+		if (!canLog(Warning))
 			return;
 
 		beLogged.log(Warning, tag, warning, e);
@@ -202,7 +203,7 @@ public class Logger
 	 */
 	@Override
 	public void logError(String error) {
-		if (!enable)
+		if (!canLog(Error))
 			return;
 
 		beLogged.log(Error, tag, error, null);
@@ -210,7 +211,7 @@ public class Logger
 
 	@Override
 	public void logError(String error, Object... params) {
-		if (!enable)
+		if (!canLog(Error))
 			return;
 
 		beLogged.log(Error, tag, String.format(error, params), null);
@@ -218,7 +219,7 @@ public class Logger
 
 	@Override
 	public void logError(String error, Throwable e) {
-		if (!enable)
+		if (!canLog(Error))
 			return;
 
 		beLogged.log(Error, tag, error, e);
@@ -226,7 +227,7 @@ public class Logger
 
 	@Override
 	public void logError(Throwable e) {
-		if (!enable)
+		if (!canLog(Error))
 			return;
 
 		beLogged.log(Error, tag, "", e);

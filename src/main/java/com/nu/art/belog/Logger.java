@@ -38,6 +38,8 @@ public class Logger
 
 	private String tag = getClass().getSimpleName();
 
+	private boolean enable = true;
+
 	protected Logger() {
 		beLogged = BeLogged.getInstance();
 	}
@@ -47,26 +49,46 @@ public class Logger
 		return this;
 	}
 
+	public void setEnable(boolean enable) {
+		this.enable = enable;
+	}
+
+	public boolean isEnable() {
+		return enable;
+	}
+
 	/*
 	 * VERBOSE
 	 */
 	@Override
 	public void logVerbose(String verbose) {
+		if (!enable)
+			return;
+
 		beLogged.log(Verbose, tag, verbose, null);
 	}
 
 	@Override
 	public void logVerbose(String verbose, Object... params) {
+		if (!enable)
+			return;
+
 		beLogged.log(Verbose, tag, String.format(verbose, params), null);
 	}
 
 	@Override
 	public void logVerbose(Throwable e) {
+		if (!enable)
+			return;
+
 		beLogged.log(Verbose, tag, "", e);
 	}
 
 	@Override
 	public void logVerbose(String verbose, Throwable e) {
+		if (!enable)
+			return;
+
 		beLogged.log(Verbose, tag, verbose, e);
 	}
 
@@ -75,21 +97,33 @@ public class Logger
 	 */
 	@Override
 	public void logDebug(String debug) {
+		if (!enable)
+			return;
+
 		beLogged.log(Debug, tag, debug, null);
 	}
 
 	@Override
 	public void logDebug(String debug, Object... params) {
+		if (!enable)
+			return;
+
 		beLogged.log(Debug, tag, String.format(debug, params), null);
 	}
 
 	@Override
 	public void logDebug(Throwable e) {
+		if (!enable)
+			return;
+
 		beLogged.log(Debug, tag, "", e);
 	}
 
 	@Override
 	public void logDebug(String debug, Throwable e) {
+		if (!enable)
+			return;
+
 		beLogged.log(Debug, tag, debug, e);
 	}
 
@@ -98,21 +132,33 @@ public class Logger
 	 */
 	@Override
 	public void logInfo(String info) {
+		if (!enable)
+			return;
+
 		beLogged.log(Info, tag, info, null);
 	}
 
 	@Override
 	public void logInfo(String info, Object... params) {
+		if (!enable)
+			return;
+
 		beLogged.log(Info, tag, String.format(info, params), null);
 	}
 
 	@Override
 	public void logInfo(Throwable e) {
+		if (!enable)
+			return;
+
 		beLogged.log(Info, tag, "", e);
 	}
 
 	@Override
 	public void logInfo(String info, Throwable e) {
+		if (!enable)
+			return;
+
 		beLogged.log(Info, tag, info, e);
 	}
 
@@ -121,21 +167,33 @@ public class Logger
 	 */
 	@Override
 	public void logWarning(String warning) {
+		if (!enable)
+			return;
+
 		beLogged.log(Warning, tag, warning, null);
 	}
 
 	@Override
 	public void logWarning(String warning, Object... params) {
+		if (!enable)
+			return;
+
 		beLogged.log(Warning, tag, String.format(warning, params), null);
 	}
 
 	@Override
 	public void logWarning(Throwable e) {
+		if (!enable)
+			return;
+
 		beLogged.log(Warning, tag, "", e);
 	}
 
 	@Override
 	public void logWarning(String warning, Throwable e) {
+		if (!enable)
+			return;
+
 		beLogged.log(Warning, tag, warning, e);
 	}
 
@@ -144,21 +202,33 @@ public class Logger
 	 */
 	@Override
 	public void logError(String error) {
+		if (!enable)
+			return;
+
 		beLogged.log(Error, tag, error, null);
 	}
 
 	@Override
 	public void logError(String error, Object... params) {
+		if (!enable)
+			return;
+
 		beLogged.log(Error, tag, String.format(error, params), null);
 	}
 
 	@Override
 	public void logError(String error, Throwable e) {
+		if (!enable)
+			return;
+
 		beLogged.log(Error, tag, error, e);
 	}
 
 	@Override
 	public void logError(Throwable e) {
+		if (!enable)
+			return;
+
 		beLogged.log(Error, tag, "", e);
 	}
 }

@@ -62,7 +62,7 @@ public class Logger
 		if (!canLog(level))
 			return;
 
-		log(level, tag, message, null);
+		beLogged.log(level, tag, message, null);
 	}
 
 	public void log(LogLevel level, String message, Object... params) {

@@ -20,7 +20,6 @@ package com.nu.art.belog;
 
 import com.nu.art.belog.BeLogged.LogEntry;
 import com.nu.art.belog.consts.LogLevel;
-import com.nu.art.core.interfaces.ILogger;
 import com.nu.art.core.tools.ArrayTools;
 import com.nu.art.core.utils.InstanceRecycler;
 import com.nu.art.core.utils.InstanceRecycler.Instantiator;
@@ -68,7 +67,7 @@ public final class BeLogged
 		return new LogEntry();
 	}
 
-	public final ILogger getLogger(Object objectForTag) {
+	public final Logger getLogger(Object objectForTag) {
 		String tag;
 		if (objectForTag instanceof String)
 			tag = (String) objectForTag;

@@ -58,39 +58,55 @@ public class Logger
 		return logLevelToLog.ordinal() >= minLogLevel.ordinal();
 	}
 
-	/*
-		 * VERBOSE
-		 */
-	@Override
-	public void logVerbose(String verbose) {
-		if (!canLog(Verbose))
+	public void log(LogLevel level, String message) {
+		if (!canLog(level))
 			return;
 
-		beLogged.log(Verbose, tag, verbose, null);
+		log(level, tag, message, null);
+	}
+
+	public void log(LogLevel level, String message, Object... params) {
+		if (!canLog(level))
+			return;
+
+		beLogged.log(level, tag, String.format(message, params), null);
+	}
+
+	public void log(LogLevel level, Throwable e) {
+		if (!canLog(level))
+			return;
+
+		beLogged.log(level, tag, "", e);
+	}
+
+	public void log(LogLevel level, String message, Throwable e) {
+		if (!canLog(level))
+			return;
+
+		beLogged.log(level, tag, message, e);
+	}
+
+	/*
+	 * VERBOSE
+	 */
+	@Override
+	public void logVerbose(String verbose) {
+		log(Verbose, verbose);
 	}
 
 	@Override
 	public void logVerbose(String verbose, Object... params) {
-		if (!canLog(Verbose))
-			return;
-
-		beLogged.log(Verbose, tag, String.format(verbose, params), null);
+		log(Verbose, verbose, params);
 	}
 
 	@Override
 	public void logVerbose(Throwable e) {
-		if (!canLog(Verbose))
-			return;
-
-		beLogged.log(Verbose, tag, "", e);
+		log(Verbose, e);
 	}
 
 	@Override
 	public void logVerbose(String verbose, Throwable e) {
-		if (!canLog(Verbose))
-			return;
-
-		beLogged.log(Verbose, tag, verbose, e);
+		log(Verbose, verbose, e);
 	}
 
 	/*
@@ -98,34 +114,22 @@ public class Logger
 	 */
 	@Override
 	public void logDebug(String debug) {
-		if (!canLog(Debug))
-			return;
-
-		beLogged.log(Debug, tag, debug, null);
+		log(Debug, debug);
 	}
 
 	@Override
 	public void logDebug(String debug, Object... params) {
-		if (!canLog(Debug))
-			return;
-
-		beLogged.log(Debug, tag, String.format(debug, params), null);
+		log(Debug, debug, params);
 	}
 
 	@Override
 	public void logDebug(Throwable e) {
-		if (!canLog(Debug))
-			return;
-
-		beLogged.log(Debug, tag, "", e);
+		log(Debug, e);
 	}
 
 	@Override
 	public void logDebug(String debug, Throwable e) {
-		if (!canLog(Debug))
-			return;
-
-		beLogged.log(Debug, tag, debug, e);
+		log(Debug, debug, e);
 	}
 
 	/*
@@ -133,34 +137,22 @@ public class Logger
 	 */
 	@Override
 	public void logInfo(String info) {
-		if (!canLog(Info))
-			return;
-
-		beLogged.log(Info, tag, info, null);
+		log(Info, info);
 	}
 
 	@Override
 	public void logInfo(String info, Object... params) {
-		if (!canLog(Info))
-			return;
-
-		beLogged.log(Info, tag, String.format(info, params), null);
+		log(Info, info, params);
 	}
 
 	@Override
 	public void logInfo(Throwable e) {
-		if (!canLog(Info))
-			return;
-
-		beLogged.log(Info, tag, "", e);
+		log(Info, e);
 	}
 
 	@Override
 	public void logInfo(String info, Throwable e) {
-		if (!canLog(Info))
-			return;
-
-		beLogged.log(Info, tag, info, e);
+		log(Info, info, e);
 	}
 
 	/*
@@ -168,34 +160,22 @@ public class Logger
 	 */
 	@Override
 	public void logWarning(String warning) {
-		if (!canLog(Warning))
-			return;
-
-		beLogged.log(Warning, tag, warning, null);
+		log(Warning, warning);
 	}
 
 	@Override
 	public void logWarning(String warning, Object... params) {
-		if (!canLog(Warning))
-			return;
-
-		beLogged.log(Warning, tag, String.format(warning, params), null);
+		log(Warning, warning, params);
 	}
 
 	@Override
 	public void logWarning(Throwable e) {
-		if (!canLog(Warning))
-			return;
-
-		beLogged.log(Warning, tag, "", e);
+		log(Warning, e);
 	}
 
 	@Override
 	public void logWarning(String warning, Throwable e) {
-		if (!canLog(Warning))
-			return;
-
-		beLogged.log(Warning, tag, warning, e);
+		log(Warning, warning, e);
 	}
 
 	/*
@@ -203,33 +183,21 @@ public class Logger
 	 */
 	@Override
 	public void logError(String error) {
-		if (!canLog(Error))
-			return;
-
-		beLogged.log(Error, tag, error, null);
+		log(Error, error);
 	}
 
 	@Override
 	public void logError(String error, Object... params) {
-		if (!canLog(Error))
-			return;
-
-		beLogged.log(Error, tag, String.format(error, params), null);
-	}
-
-	@Override
-	public void logError(String error, Throwable e) {
-		if (!canLog(Error))
-			return;
-
-		beLogged.log(Error, tag, error, e);
+		log(Error, error, params);
 	}
 
 	@Override
 	public void logError(Throwable e) {
-		if (!canLog(Error))
-			return;
+		log(Error, e);
+	}
 
-		beLogged.log(Error, tag, "", e);
+	@Override
+	public void logError(String error, Throwable e) {
+		log(Error, error, e);
 	}
 }

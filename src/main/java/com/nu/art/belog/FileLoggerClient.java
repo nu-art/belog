@@ -19,7 +19,7 @@
 
 package com.nu.art.belog;
 
-import com.nu.art.belog.BeLogged.LogEntry;
+import com.nu.art.belog.consts.LogLevel;
 import com.nu.art.core.tools.ArrayTools;
 import com.nu.art.core.tools.FileTools;
 
@@ -193,10 +193,11 @@ public class FileLoggerClient
 	}
 
 	@Override
-	protected void log(LogEntry entry, String logEntry) {
+	protected void log(LogLevel level, String thread, String tag, String message, Throwable t) {
 		if (!enable)
 			return;
 
+		String logEntry = composer.composeEntry(level, thread, tag, message, t);
 		try {
 			logWriter.write(logEntry);
 			logWriter.flush();

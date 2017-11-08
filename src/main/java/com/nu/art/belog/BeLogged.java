@@ -56,7 +56,7 @@ public final class BeLogged
 		final String thread = Thread.currentThread().getName();
 		LogEntry instance = recycler.getInstance().set(level, thread, tag, message, t);
 		for (BeLoggedClient client : clients) {
-			client._log(instance);
+			client._log(level, thread, tag, message, t);
 		}
 
 		recycler.recycle(instance);

@@ -19,12 +19,12 @@
 
 package com.nu.art.belog.interfaces;
 
-import com.nu.art.belog.BeLogged.LogEntry;
+import com.nu.art.belog.consts.LogLevel;
 
 /**
  * Created by TacB0sS on 27-Feb 2017.
  */
 public interface LogComposer {
 
-	String composeEntry(LogEntry logEntry);
+	String composeEntry(LogLevel level, String thread, String tag, String message, Throwable t);
 }

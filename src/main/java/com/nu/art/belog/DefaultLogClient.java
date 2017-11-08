@@ -19,7 +19,7 @@
 
 package com.nu.art.belog;
 
-import com.nu.art.belog.BeLogged.LogEntry;
+import com.nu.art.belog.consts.LogLevel;
 
 /**
  * Created by TacB0sS on 28-Feb 2017.
@@ -29,18 +29,19 @@ public class DefaultLogClient
 		extends BeLoggedClient {
 
 	@Override
-	protected void log(LogEntry entry, String logEntry) {
-		switch (entry.level) {
+	protected void log(LogLevel level, String thread, String tag, String message, Throwable t) {
+		String s = composer.composeEntry(level, thread, tag, message, t);
+		switch (level) {
 
 			case Verbose:
 			case Debug:
 			case Info:
-				System.out.println(logEntry);
+				System.out.println(s);
 				break;
 			case Warning:
 			case Error:
 			case Assert:
-				System.err.println(logEntry);
+				System.err.println(s);
 		}
 	}
 }

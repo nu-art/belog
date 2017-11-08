@@ -19,7 +19,7 @@
 
 package com.nu.art.belog;
 
-import com.nu.art.belog.BeLogged.LogEntry;
+import com.nu.art.belog.consts.LogLevel;
 import com.nu.art.core.tools.ExceptionTools;
 
 import java.text.SimpleDateFormat;
@@ -38,15 +38,15 @@ public class DefaultLogComposer
 	private final Date date = new Date();
 
 	@Override
-	public synchronized String composeEntry(LogEntry logEntry) {
-		date.setTime(logEntry.timestamp);
+	public synchronized String composeEntry(LogLevel level, String thread, String tag, String message, Throwable t) {
+		date.setTime(System.currentTimeMillis());
 		buffer.append(DefaultTimeFormat.format(date)).append(" ");
-		buffer.append(logEntry.level).append("/");
-		buffer.append(logEntry.thread).append("/");
-		buffer.append(logEntry.tag).append(": ");
-		buffer.append(logEntry.message).append("\n");
-		if (logEntry.t != null)
-			buffer.append(ExceptionTools.getStackTrace(logEntry.t)).append("\n");
+		buffer.append(level).append("/");
+		buffer.append(thread).append("/");
+		buffer.append(tag).append(": ");
+		buffer.append(message).append("\n");
+		if (t != null)
+			buffer.append(ExceptionTools.getStackTrace(t)).append("\n");
 
 		String toRet = buffer.toString();
 		buffer.setLength(0);

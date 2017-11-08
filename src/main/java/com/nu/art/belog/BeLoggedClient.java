@@ -18,13 +18,12 @@
  */
 package com.nu.art.belog;
 
-import com.nu.art.belog.BeLogged.LogEntry;
 import com.nu.art.belog.consts.LogLevel;
 import com.nu.art.belog.interfaces.LogComposer;
 
 public abstract class BeLoggedClient {
 
-	private LogComposer composer = new DefaultLogComposer();
+	protected LogComposer composer = new DefaultLogComposer();
 
 	private LogLevel minLogLevel = LogLevel.Verbose;
 
@@ -41,14 +40,14 @@ public abstract class BeLoggedClient {
 		this.maxLogLevel = maxLogLevel;
 	}
 
-	final void _log(LogEntry logEntry) {
-		if (!isLoggable(logEntry.level))
+	protected void _log(LogLevel level, String thread, String tag, String message, Throwable t) {
+		if (!isLoggable(level))
 			return;
 
-		log(logEntry, composer.composeEntry(logEntry));
+		log(level, thread, tag, message, t);
 	}
 
-	protected abstract void log(LogEntry entry, String logEntry);
+	protected abstract void log(LogLevel level, String thread, String tag, String message, Throwable t);
 
 	protected boolean isLoggable(LogLevel level) {
 		return level.ordinal() >= minLogLevel.ordinal() && level.ordinal() <= maxLogLevel.ordinal();

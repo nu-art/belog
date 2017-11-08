@@ -22,6 +22,9 @@ package com.nu.art.belog;
 import com.nu.art.belog.consts.LogLevel;
 import com.nu.art.core.tools.ArrayTools;
 import com.nu.art.core.tools.FileTools;
+import com.nu.art.core.utils.InstanceRecycler;
+import com.nu.art.core.utils.InstanceRecycler.Instantiator;
+import com.nu.art.core.utils.PoolQueue;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -47,6 +50,34 @@ public class FileLoggerClient
 	private OutputStreamWriter logWriter;
 
 	private long written;
+	private PoolQueue<LogEntry> queue = new PoolQueue<LogEntry>() {
+		@Override
+		protected void onExecutionError(LogEntry item, Throwable e) {
+
+		}
+
+		@Override
+		protected void executeAction(LogEntry logEntry)
+				throws Exception {
+
+			try {
+				String logMessage = composer.composeEntry(logEntry.level, logEntry.thread, logEntry.tag, logEntry.message, logEntry.t);
+				try {
+					logWriter.write(logMessage);
+					logWriter.flush();
+				} catch (IOException e) {
+					disable(e);
+					return;
+				}
+
+				written += logMessage.getBytes().length;
+				if (written >= maxFileSize)
+					rotate();
+			} finally {
+				recycler.recycle(logEntry);
+			}
+		}
+	};
 
 	public void set(File logFolder, String fileNamePrefix, long maxFileSize, int filesCount) {
 		this.logFolder = logFolder;
@@ -82,6 +113,9 @@ public class FileLoggerClient
 			written = logFile.length();
 			createLogWriter(logFile);
 		}
+
+		// Starting the queue after the setup is completed
+		queue.createThreads("File logger", 1);
 	}
 
 	private void rotate() {
@@ -192,22 +226,19 @@ public class FileLoggerClient
 		return ArrayTools.asArray(filesToZip, File.class);
 	}
 
+	private InstanceRecycler<LogEntry> recycler = new InstanceRecycler<>(new Instantiator<LogEntry>() {
+		@Override
+		public LogEntry create() {
+			return new LogEntry();
+		}
+	});
+
 	@Override
 	protected void log(LogLevel level, String thread, String tag, String message, Throwable t) {
 		if (!enable)
 			return;
 
-		String logEntry = composer.composeEntry(level, thread, tag, message, t);
-		try {
-			logWriter.write(logEntry);
-			logWriter.flush();
-		} catch (IOException e) {
-			disable(e);
-			return;
-		}
-
-		written += logEntry.getBytes().length;
-		if (written >= maxFileSize)
-			rotate();
+		LogEntry instance = recycler.getInstance().set(level, thread, tag, message, t);
+		queue.addItem(instance);
 	}
 }

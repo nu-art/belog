@@ -18,14 +18,10 @@
  */
 package com.nu.art.belog;
 
-import com.nu.art.belog.BeLogged.LogEntry;
 import com.nu.art.belog.consts.LogLevel;
 import com.nu.art.core.tools.ArrayTools;
-import com.nu.art.core.utils.InstanceRecycler;
-import com.nu.art.core.utils.InstanceRecycler.Instantiator;
 
-public final class BeLogged
-		implements Instantiator<LogEntry> {
+public final class BeLogged {
 
 	private static BeLogged INSTANCE;
 
@@ -35,8 +31,6 @@ public final class BeLogged
 
 		return INSTANCE;
 	}
-
-	private InstanceRecycler<LogEntry> recycler = new InstanceRecycler<>(this);
 
 	private BeLogged() {}
 
@@ -54,17 +48,9 @@ public final class BeLogged
 
 	final void log(final LogLevel level, final String tag, final String message, final Throwable t) {
 		final String thread = Thread.currentThread().getName();
-		LogEntry instance = recycler.getInstance().set(level, thread, tag, message, t);
 		for (BeLoggedClient client : clients) {
 			client._log(level, thread, tag, message, t);
 		}
-
-		recycler.recycle(instance);
-	}
-
-	@Override
-	public final LogEntry create() {
-		return new LogEntry();
 	}
 
 	public final Logger getLogger(Object objectForTag) {
@@ -74,30 +60,5 @@ public final class BeLogged
 		else
 			tag = objectForTag.getClass().getSimpleName();
 		return new Logger().setTag(tag);
-	}
-
-	public class LogEntry {
-
-		public long timestamp;
-
-		public LogLevel level;
-
-		public String thread;
-
-		public String tag;
-
-		public String message;
-
-		public Throwable t;
-
-		private LogEntry set(LogLevel level, String thread, String tag, String message, Throwable t) {
-			this.timestamp = System.currentTimeMillis();
-			this.level = level;
-			this.thread = thread;
-			this.tag = tag;
-			this.message = message;
-			this.t = t;
-			return this;
-		}
 	}
 }

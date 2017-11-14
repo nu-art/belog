@@ -37,7 +37,12 @@ public class Logger
 
 	private BeLogged beLogged;
 
-	private String tag = getClass().getSimpleName();
+	private String tag = "NotSet";
+
+	{
+		String fqn = getClass().getName();
+		tag = fqn.substring(fqn.lastIndexOf(".") + 1);
+	}
 
 	private LogLevel minLogLevel = Verbose;
 
@@ -45,7 +50,7 @@ public class Logger
 		beLogged = BeLogged.getInstance();
 	}
 
-	public final Logger setTag(String tag) {
+	public Logger setTag(String tag) {
 		this.tag = tag;
 		return this;
 	}

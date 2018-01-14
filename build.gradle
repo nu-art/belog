@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-apply plugin: 'java'
+apply plugin: 'java-library'
 
 tasks.withType(JavaCompile) {
     sourceCompatibility = JavaVersion.VERSION_1_7
@@ -29,5 +29,5 @@ if (project.hasProperty("configureUploadJavaArtifact")) {
 };
 
 dependencies {
-    _implementation(resolveDependency('nu-art-core', 'com.nu-art-software', "${NU_ART_VERSION}"))
+    _api(resolveDependency('nu-art-core', 'com.nu-art-software', "${NU_ART_VERSION}"))
 }

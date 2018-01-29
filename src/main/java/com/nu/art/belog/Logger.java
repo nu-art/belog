@@ -91,6 +91,11 @@ public class Logger
 		beLogged.log(level, tag, message, e);
 	}
 
+	public boolean runtimeDebuggingLog(String log) {
+		logDebug(log);
+		return false;
+	}
+
 	/*
 	 * VERBOSE
 	 */

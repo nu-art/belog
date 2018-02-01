@@ -74,7 +74,12 @@ public class Logger
 		if (!canLog(level))
 			return;
 
-		beLogged.log(level, tag, String.format(message, params), null);
+		Throwable t = null;
+		Object lastParam = params[params.length - 1];
+		if (lastParam instanceof Throwable)
+			t = (Throwable) lastParam;
+
+		beLogged.log(level, tag, String.format(message, params), t);
 	}
 
 	public void log(LogLevel level, Throwable e) {

@@ -21,6 +21,7 @@ package com.nu.art.belog;
 
 import com.nu.art.belog.consts.LogLevel;
 import com.nu.art.core.interfaces.ILogger;
+import com.nu.art.core.tools.ArrayTools;
 
 import static com.nu.art.belog.consts.LogLevel.Debug;
 import static com.nu.art.belog.consts.LogLevel.Error;
@@ -79,7 +80,13 @@ public class Logger
 		if (lastParam instanceof Throwable)
 			t = (Throwable) lastParam;
 
-		beLogged.log(level, tag, String.format(message, params), t);
+		String formattedMessage;
+		try {
+			formattedMessage = String.format(message, params);
+			beLogged.log(level, tag, formattedMessage, t);
+		} catch (Exception e) {
+			beLogged.log(Error, tag, "Error formatting string: " + message + ", with params: " + ArrayTools.printGenericArray("", -1, params), e);
+		}
 	}
 
 	public void log(LogLevel level, Throwable e) {

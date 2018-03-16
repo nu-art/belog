@@ -40,6 +40,8 @@ public class Logger
 
 	private String tag = "NotSet";
 
+	private boolean enable = true;
+
 	{
 		String fqn = getClass().getName();
 		tag = fqn.substring(fqn.lastIndexOf(".") + 1);
@@ -61,7 +63,15 @@ public class Logger
 	}
 
 	private boolean canLog(LogLevel logLevelToLog) {
-		return logLevelToLog.ordinal() >= minLogLevel.ordinal();
+		return logLevelToLog.ordinal() >= minLogLevel.ordinal() && isLoggerEnabled();
+	}
+
+	public void setEnable(boolean enable) {
+		this.enable = enable;
+	}
+
+	protected boolean isLoggerEnabled() {
+		return enable;
 	}
 
 	public void log(LogLevel level, String message) {

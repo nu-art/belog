@@ -210,8 +210,7 @@ public class FileLoggerClient
 		return toRet;
 	}
 
-	public final File[] getAllLogFiles()
-			throws IOException {
+	public final File[] getAllLogFiles() {
 		List<File> filesToZip = new ArrayList<>();
 		for (int i = 0; i < filesCount; i++) {
 			File file = getLogTextFile(i);

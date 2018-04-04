@@ -58,6 +58,10 @@ public class Logger
 		return this;
 	}
 
+	public String getTag() {
+		return tag;
+	}
+
 	public void setMinLogLevel(LogLevel minLogLevel) {
 		this.minLogLevel = minLogLevel;
 	}

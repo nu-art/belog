@@ -61,4 +61,8 @@ public final class BeLogged {
 			tag = objectForTag.getClass().getSimpleName();
 		return new Logger().setTag(tag);
 	}
+
+	public BeLoggedClient[] getClients() {
+		return clients;
+	}
 }

@@ -29,7 +29,7 @@ import java.util.Date;
  * Created by TacB0sS on 27-Feb 2017.
  */
 public class DefaultLogComposer
-		implements com.nu.art.belog.interfaces.LogComposer {
+	implements com.nu.art.belog.interfaces.LogComposer {
 
 	public final static SimpleDateFormat DefaultTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZ");
 

@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FileLoggerClient
-		extends BeLoggedClient {
+	extends BeLoggedClient {
 
 	private File logFolder;
 
@@ -58,7 +58,7 @@ public class FileLoggerClient
 
 		@Override
 		protected void executeAction(LogEntry logEntry)
-				throws Exception {
+			throws Exception {
 
 			try {
 				String logMessage = composer.composeEntry(logEntry.level, logEntry.thread, logEntry.tag, logEntry.message, logEntry.t);

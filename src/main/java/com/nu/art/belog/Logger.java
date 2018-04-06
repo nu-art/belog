@@ -34,7 +34,7 @@ import static com.nu.art.belog.consts.LogLevel.Warning;
  */
 
 public class Logger
-		implements ILogger {
+	implements ILogger {
 
 	private BeLogged beLogged;
 

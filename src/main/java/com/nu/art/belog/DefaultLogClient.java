@@ -26,7 +26,7 @@ import com.nu.art.belog.consts.LogLevel;
  */
 
 public class DefaultLogClient
-		extends BeLoggedClient {
+	extends BeLoggedClient {
 
 	@Override
 	protected void log(LogLevel level, String thread, String tag, String message, Throwable t) {
@@ -36,12 +36,12 @@ public class DefaultLogClient
 			case Verbose:
 			case Debug:
 			case Info:
-				System.out.println(s);
+				System.out.print(s);
 				break;
 			case Warning:
 			case Error:
 			case Assert:
-				System.err.println(s);
+				System.err.print(s);
 		}
 	}
 }

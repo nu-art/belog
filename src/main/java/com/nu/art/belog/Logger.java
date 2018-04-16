@@ -70,7 +70,7 @@ public class Logger
 		return logLevelToLog.ordinal() >= minLogLevel.ordinal() && isLoggerEnabled();
 	}
 
-	public void setEnable(boolean enable) {
+	public void setLoggerEnable(boolean enable) {
 		this.enable = enable;
 	}
 

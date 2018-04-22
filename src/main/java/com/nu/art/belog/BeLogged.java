@@ -65,4 +65,10 @@ public final class BeLogged {
 	public BeLoggedClient[] getClients() {
 		return clients;
 	}
+
+	public void setLogLevel(final LogLevel minLevel, final LogLevel maxLevel) {
+		for (BeLoggedClient client : clients) {
+			client.setLogLevel(minLevel, maxLevel);
+		}
+	}
 }

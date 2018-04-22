@@ -30,4 +30,5 @@ if (project.hasProperty("configureUploadJavaArtifact")) {
 
 dependencies {
     _api(resolveDependency('nu-art-core', 'com.nu-art-software', "${NU_ART_VERSION}"))
+    compile 'junit:junit:4.12'
 }

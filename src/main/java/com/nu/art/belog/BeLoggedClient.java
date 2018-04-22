@@ -41,9 +41,6 @@ public abstract class BeLoggedClient {
 	}
 
 	protected void _log(LogLevel level, String thread, String tag, String message, Throwable t) {
-		if (!isLoggable(level))
-			return;
-
 		log(level, thread, tag, message, t);
 	}
 

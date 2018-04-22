@@ -46,10 +46,18 @@ public final class BeLogged {
 		logClient.dispose();
 	}
 
-	final void log(final LogLevel level, final String tag, final String message, final Throwable t) {
+	final void log(final LogLevel level, final String tag, final String message, final Object[] params, final Throwable t) {
 		final String thread = Thread.currentThread().getName();
+		String formattedMessage = params == null ? message : null;
+
 		for (BeLoggedClient client : clients) {
-			client._log(level, thread, tag, message, t);
+			if (!client.isLoggable(level))
+				continue;
+
+			if (formattedMessage == null && message != null)
+				formattedMessage = String.format(message, params);
+
+			client._log(level, thread, tag, formattedMessage, t);
 		}
 	}
 

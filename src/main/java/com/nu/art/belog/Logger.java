@@ -79,42 +79,37 @@ public class Logger
 	}
 
 	public void log(LogLevel level, String message) {
-		if (!canLog(level))
-			return;
+		finalLog(level, message);
+	}
 
-		beLogged.log(level, tag, message, null);
+	public void log(LogLevel level, Throwable e) {
+		finalLog(level, null, e);
+	}
+
+	public void log(LogLevel level, String message, Throwable e) {
+		finalLog(level, message, e);
 	}
 
 	public void log(LogLevel level, String message, Object... params) {
+		finalLog(level, message, params);
+	}
+
+	private void finalLog(LogLevel level, String message, Object... params) {
 		if (!canLog(level))
 			return;
 
 		Throwable t = null;
-		Object lastParam = params[params.length - 1];
-		if (lastParam instanceof Throwable)
-			t = (Throwable) lastParam;
-
-		String formattedMessage;
-		try {
-			formattedMessage = String.format(message, params);
-			beLogged.log(level, tag, formattedMessage, t);
-		} catch (Exception e) {
-			beLogged.log(Error, tag, "Error formatting string: " + message + ", with params: " + ArrayTools.printGenericArray("", -1, params), e);
+		if (params.length > 0) {
+			Object lastParam = params[params.length - 1];
+			if (lastParam instanceof Throwable)
+				t = (Throwable) lastParam;
 		}
-	}
 
-	public void log(LogLevel level, Throwable e) {
-		if (!canLog(level))
-			return;
-
-		beLogged.log(level, tag, "", e);
-	}
-
-	public void log(LogLevel level, String message, Throwable e) {
-		if (!canLog(level))
-			return;
-
-		beLogged.log(level, tag, message, e);
+		try {
+			beLogged.log(level, tag, message, params, t);
+		} catch (Exception e) {
+			beLogged.log(Error, tag, "Error formatting string: " + message + ", with params: " + ArrayTools.printGenericArray("", -1, params), null, e);
+		}
 	}
 
 	public boolean runtimeDebuggingLog(String log) {

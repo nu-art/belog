@@ -44,5 +44,8 @@ public class TestBelogged
 		log(LogLevel.Debug, "Should be shown With param and exception %s and %s", "Donno", new NotImplementedYetException("Test Exception debug"));
 
 		log(LogLevel.Info, new NotImplementedYetException("Exception only"));
+		BeLogged.getInstance().setLogLevel(LogLevel.Warning, LogLevel.Assert);
+		log(LogLevel.Info, "Should NOT be shown");
+
 	}
 }

@@ -12,6 +12,7 @@ import org.junit.Test;
 public class TestBelogged
 	extends Logger {
 
+	private static int Count_Repeat = 1000000;
 	private static boolean setUpIsDone = false;
 	private DefaultLogClient logClient;
 
@@ -27,7 +28,7 @@ public class TestBelogged
 	}
 
 	@Test
-	public void test() {
+	public void testBelogged() {
 		log(LogLevel.Debug, "%s: Testing param", "Test");
 		log(LogLevel.Info, "Testing no param");
 
@@ -46,6 +47,32 @@ public class TestBelogged
 		log(LogLevel.Info, new NotImplementedYetException("Exception only"));
 		BeLogged.getInstance().setLogLevel(LogLevel.Warning, LogLevel.Assert);
 		log(LogLevel.Info, "Should NOT be shown");
+	}
 
+	@Test
+	public void logBenchmark() {
+		benchmarkStringConcat("param1", 2, "param3", 0.84f);
+		benchmarkStringFormat("param1", 2, "param3", 0.84f);
+
+		long concatDuration = benchmarkStringConcat("param1", 2, "param3", 0.84f);
+		long formatDuration = benchmarkStringFormat("param1", 2, "param3", 0.84f);
+
+		logInfo("format: " + formatDuration + ", concat: " + concatDuration);
+	}
+
+	private long benchmarkStringFormat(Object... p) {
+		long start = System.currentTimeMillis();
+		for (int i = 0; i < Count_Repeat; i++) {
+			String str = String.format("Test String format: 1-%s, 2-%d, 3-%s, 4-%f", p);
+		}
+		return System.currentTimeMillis() - start;
+	}
+
+	private long benchmarkStringConcat(Object... p) {
+		long start = System.currentTimeMillis();
+		for (int i = 0; i < Count_Repeat; i++) {
+			String str = "Test String concat: 1-" + p[0] + ", 2-" + p[1] + ", 3-" + p[2] + ", 4-" + p[3];
+		}
+		return System.currentTimeMillis() - start;
 	}
 }

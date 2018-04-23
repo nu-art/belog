@@ -51,26 +51,33 @@ public class TestBelogged
 
 	@Test
 	public void logBenchmark() {
-		benchmarkStringConcat("param1", 2, "param3", 0.84f);
-		benchmarkStringFormat("param1", 2, "param3", 0.84f);
-
-		long concatDuration = benchmarkStringConcat("param1", 2, "param3", 0.84f);
-		long formatDuration = benchmarkStringFormat("param1", 2, "param3", 0.84f);
-
-		logInfo("format: " + formatDuration + ", concat: " + concatDuration);
+		benchmarkStringConcat(10, "param1", 2, "param3", 0.84f);
+		benchmarkStringFormat(10, "param1", 2, "param3", 0.84f);
+		logBenchmarking(1000);
+		logBenchmarking(10000);
+		logBenchmarking(100000);
+		logBenchmarking(1000000);
 	}
 
-	private long benchmarkStringFormat(Object... p) {
+	private void logBenchmarking(int count) {
+
+		long formatDuration = benchmarkStringFormat(count, "param1", 2, "param3", 0.84f);
+		long concatDuration = benchmarkStringConcat(count, "param1", 2, "param3", 0.84f);
+
+		logInfo("Repeat: " + count + " format: " + formatDuration + ", concat: " + concatDuration);
+	}
+
+	private long benchmarkStringFormat(int count, Object... p) {
 		long start = System.currentTimeMillis();
-		for (int i = 0; i < Count_Repeat; i++) {
+		for (int i = 0; i < count; i++) {
 			String str = String.format("Test String format: 1-%s, 2-%d, 3-%s, 4-%f", p);
 		}
 		return System.currentTimeMillis() - start;
 	}
 
-	private long benchmarkStringConcat(Object... p) {
+	private long benchmarkStringConcat(int count, Object... p) {
 		long start = System.currentTimeMillis();
-		for (int i = 0; i < Count_Repeat; i++) {
+		for (int i = 0; i < count; i++) {
 			String str = "Test String concat: 1-" + p[0] + ", 2-" + p[1] + ", 3-" + p[2] + ", 4-" + p[3];
 		}
 		return System.currentTimeMillis() - start;

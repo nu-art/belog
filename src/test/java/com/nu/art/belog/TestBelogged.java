@@ -47,6 +47,8 @@ public class TestBelogged
 		log(LogLevel.Info, new NotImplementedYetException("Exception only"));
 		BeLogged.getInstance().setLogLevel(LogLevel.Warning, LogLevel.Assert);
 		log(LogLevel.Info, "Should NOT be shown");
+		log(LogLevel.Warning, "testing log with %F in it");
+
 	}
 
 	@Test

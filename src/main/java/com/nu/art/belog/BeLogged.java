@@ -48,7 +48,7 @@ public final class BeLogged {
 
 	final void log(final LogLevel level, final String tag, final String message, final Object[] params, final Throwable t) {
 		final String thread = Thread.currentThread().getName();
-		String formattedMessage = params == null ? message : null;
+		String formattedMessage = params == null || params.length == 0 ? message : null;
 
 		for (BeLoggedClient client : clients) {
 			if (!client.isLoggable(level))

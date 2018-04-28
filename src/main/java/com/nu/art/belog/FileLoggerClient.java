@@ -191,7 +191,7 @@ public class FileLoggerClient
 	}
 
 	private File getFile(int i, String suffix) {
-		return new File(logFolder, fileNamePrefix + getIndexAsString(i) + "." + suffix);
+		return new File(logFolder, fileNamePrefix + "-" + getIndexAsString(i) + "." + suffix);
 	}
 
 	public int getFilesCount() {

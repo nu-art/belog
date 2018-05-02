@@ -99,8 +99,9 @@ public class Logger
 			return;
 
 		Throwable t = null;
+		Object lastParam = null;
 		if (params.length > 0) {
-			Object lastParam = params[params.length - 1];
+			lastParam = params[params.length - 1];
 			if (lastParam instanceof Throwable)
 				t = (Throwable) lastParam;
 		}
@@ -108,7 +109,12 @@ public class Logger
 		try {
 			beLogged.log(level, tag, message, params, t);
 		} catch (Exception e) {
-			beLogged.log(Error, tag, "Error formatting string: " + message + ", with params: " + ArrayTools.printGenericArray("", -1, params), null, e);
+			try {
+				if (lastParam == t && t != null)
+					beLogged.log(level, tag, message, ArrayTools.removeElement(params, t), t);
+			} catch (Exception e1) {
+				beLogged.log(Error, tag, "Error formatting string: " + message + ", with params: " + ArrayTools.printGenericArray("", -1, params), null, e);
+			}
 		}
 	}
 

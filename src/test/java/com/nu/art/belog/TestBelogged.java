@@ -29,6 +29,7 @@ public class TestBelogged
 
 	@Test
 	public void testBelogged() {
+		log(LogLevel.Debug, "Wrong Param: Incoming%202.mp3", new NotImplementedYetException("Test Exception error"));
 		log(LogLevel.Debug, "%s: Testing param", "Test");
 		log(LogLevel.Info, "Testing no param");
 
@@ -48,7 +49,6 @@ public class TestBelogged
 		BeLogged.getInstance().setLogLevel(LogLevel.Warning, LogLevel.Assert);
 		log(LogLevel.Info, "Should NOT be shown");
 		log(LogLevel.Warning, "testing log with %F in it");
-
 	}
 
 	@Test

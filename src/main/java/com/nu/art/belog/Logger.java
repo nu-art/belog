@@ -109,12 +109,16 @@ public class Logger
 		try {
 			beLogged.log(level, tag, message, params, t);
 		} catch (Exception e) {
-			try {
-				if (lastParam == t && t != null)
+			if (lastParam == t && t != null)
+				try {
 					beLogged.log(level, tag, message, ArrayTools.removeElement(params, t), t);
-			} catch (Exception e1) {
+					e = null;
+				} catch (Exception e1) {
+					e = e1;
+				}
+
+			if (e != null)
 				beLogged.log(Error, tag, "Error formatting string: " + message + ", with params: " + ArrayTools.printGenericArray("", -1, params), null, e);
-			}
 		}
 	}
 

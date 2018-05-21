@@ -17,9 +17,13 @@
  * limitations under the License.
  */
 
-applyJavaLibrary("com.nu-art-software", "nu-art")
+applyJavaLibrary()
 
 dependencies {
     api(resolveDependency('nu-art-core', 'com.nu-art-software', "${NU_ART_VERSION}"))
     testImplementation 'junit:junit:4.12'
+}
+
+if (project.hasProperty("addTask_DeployJavaArtifactToCentral")) {
+    addTask_DeployJavaArtifactToCentral("com.nu-art-software", "nu-art")
 }

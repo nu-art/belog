@@ -51,7 +51,7 @@ public final class BeLogged {
 		String formattedMessage = params == null || params.length == 0 ? message : null;
 
 		for (BeLoggedClient client : clients) {
-			if (!client.isLoggable(level))
+			if (!client.loggableCondition.isLoggable(level, thread, tag, formattedMessage, t))
 				continue;
 
 			if (formattedMessage == null && message != null)

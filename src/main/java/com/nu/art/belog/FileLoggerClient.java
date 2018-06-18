@@ -50,6 +50,7 @@ public class FileLoggerClient
 	private OutputStreamWriter logWriter;
 
 	private long written;
+
 	private PoolQueue<LogEntry> queue = new PoolQueue<LogEntry>() {
 		@Override
 		protected void onExecutionError(LogEntry item, Throwable e) {

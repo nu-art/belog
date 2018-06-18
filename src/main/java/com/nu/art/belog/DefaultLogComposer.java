@@ -20,7 +20,9 @@
 package com.nu.art.belog;
 
 import com.nu.art.belog.consts.LogLevel;
+import com.nu.art.core.interfaces.Getter;
 import com.nu.art.core.tools.ExceptionTools;
+import com.nu.art.core.utils.SynchronizedObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -31,15 +33,22 @@ import java.util.Date;
 public class DefaultLogComposer
 	implements com.nu.art.belog.interfaces.LogComposer {
 
-	public final static SimpleDateFormat DefaultTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZ");
-
-	private final StringBuffer buffer = new StringBuffer();
+	private final static SimpleDateFormat DefaultTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZ");
+	private SynchronizedObject<StringBuffer> buffers = new SynchronizedObject<>(new Getter<StringBuffer>() {
+		@Override
+		public StringBuffer get() {
+			return new StringBuffer();
+		}
+	});
 
 	private final Date date = new Date();
 
 	@Override
 	public synchronized String composeEntry(LogLevel level, String thread, String tag, String message, Throwable t) {
 		date.setTime(System.currentTimeMillis());
+
+		StringBuffer buffer = buffers.get();
+		buffer.setLength(0);
 		buffer.append(DefaultTimeFormat.format(date)).append(" ");
 		buffer.append(level).append("/");
 		buffer.append(thread).append("/");
@@ -51,8 +60,6 @@ public class DefaultLogComposer
 		if (t != null)
 			buffer.append(ExceptionTools.getStackTrace(t)).append("\n");
 
-		String toRet = buffer.toString();
-		buffer.setLength(0);
-		return toRet;
+		return buffer.toString();
 	}
 }

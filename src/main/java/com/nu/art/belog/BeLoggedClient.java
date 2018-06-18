@@ -20,10 +20,17 @@ package com.nu.art.belog;
 
 import com.nu.art.belog.consts.LogLevel;
 import com.nu.art.belog.interfaces.LogComposer;
+import com.nu.art.belog.interfaces.LoggableCondition;
 
-public abstract class BeLoggedClient {
+@SuppressWarnings( {
+	                   "unused",
+	                   "BooleanMethodIsAlwaysInverted"
+                   })
+public abstract class BeLoggedClient
+	implements LoggableCondition {
 
-	protected LogComposer composer = new DefaultLogComposer();
+	LogComposer composer = new DefaultLogComposer();
+	LoggableCondition loggableCondition = this;
 
 	private LogLevel minLogLevel = LogLevel.Verbose;
 
@@ -40,14 +47,29 @@ public abstract class BeLoggedClient {
 		this.maxLogLevel = maxLogLevel;
 	}
 
+	public final void setLoggableCondition(LoggableCondition loggableCondition) {
+		if (loggableCondition == null)
+			loggableCondition = this;
+
+		this.loggableCondition = loggableCondition;
+	}
+
 	protected void _log(LogLevel level, String thread, String tag, String message, Throwable t) {
 		log(level, thread, tag, message, t);
 	}
 
 	protected abstract void log(LogLevel level, String thread, String tag, String message, Throwable t);
 
-	protected boolean isLoggable(LogLevel level) {
+	public boolean isLoggable(LogLevel level, String thread, String tag, String formattedMessage, Throwable t) {
 		return level.ordinal() >= minLogLevel.ordinal() && level.ordinal() <= maxLogLevel.ordinal();
+	}
+
+	public LogLevel getMinLogLevel() {
+		return minLogLevel;
+	}
+
+	public LogLevel getMaxLogLevel() {
+		return maxLogLevel;
 	}
 
 	protected void dispose() {}

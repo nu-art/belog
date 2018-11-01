@@ -73,4 +73,8 @@ public abstract class BeLoggedClient
 	}
 
 	protected void dispose() {}
+
+	protected String composeEntry(LogLevel level, String thread, String tag, String message, Throwable t) {
+		return composer.composeEntry(level, thread, tag, message, t);
+	}
 }

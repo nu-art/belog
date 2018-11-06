@@ -32,6 +32,9 @@ public final class BeLogged {
 		return INSTANCE;
 	}
 
+	private LogLevel minLogLevel;
+	private LogLevel maxLogLevel;
+
 	private BeLogged() {}
 
 	private BeLoggedClient[] clients = {};
@@ -47,6 +50,9 @@ public final class BeLogged {
 	}
 
 	final void log(final LogLevel level, final String tag, final String message, final Object[] params, final Throwable t) {
+		if (!(level.ordinal() >= minLogLevel.ordinal() && level.ordinal() <= maxLogLevel.ordinal()))
+			return;
+
 		final String thread = Thread.currentThread().getName();
 		String formattedMessage = params == null || params.length == 0 ? message : null;
 
@@ -75,6 +81,9 @@ public final class BeLogged {
 	}
 
 	public void setLogLevel(final LogLevel minLevel, final LogLevel maxLevel) {
+		this.minLogLevel = minLevel;
+		this.maxLogLevel = maxLevel;
+
 		for (BeLoggedClient client : clients) {
 			client.setLogLevel(minLevel, maxLevel);
 		}

@@ -32,8 +32,8 @@ public final class BeLogged {
 		return INSTANCE;
 	}
 
-	private LogLevel minLogLevel;
-	private LogLevel maxLogLevel;
+	private LogLevel minLogLevel = LogLevel.Verbose;
+	private LogLevel maxLogLevel = LogLevel.Assert;
 
 	private BeLogged() {}
 

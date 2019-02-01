@@ -7,7 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Created by tacb0ss on 23/04/2018.
+ * Created by TacB0sS on 23/04/2018.
  */
 public class TestBelogged
 	extends Logger {

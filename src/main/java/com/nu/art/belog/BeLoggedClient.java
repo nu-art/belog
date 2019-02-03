@@ -54,13 +54,13 @@ public abstract class BeLoggedClient
 		this.loggableCondition = loggableCondition;
 	}
 
-	protected void _log(LogLevel level, String thread, String tag, String message, Throwable t) {
+	protected void _log(LogLevel level, Thread thread, String tag, String message, Throwable t) {
 		log(level, thread, tag, message, t);
 	}
 
-	protected abstract void log(LogLevel level, String thread, String tag, String message, Throwable t);
+	protected abstract void log(LogLevel level, Thread thread, String tag, String message, Throwable t);
 
-	public boolean isLoggable(LogLevel level, String thread, String tag, String formattedMessage, Throwable t) {
+	public boolean isLoggable(LogLevel level, Thread thread, String tag, String formattedMessage, Throwable t) {
 		return level.ordinal() >= minLogLevel.ordinal() && level.ordinal() <= maxLogLevel.ordinal();
 	}
 
@@ -74,7 +74,7 @@ public abstract class BeLoggedClient
 
 	protected void dispose() {}
 
-	protected String composeEntry(LogLevel level, String thread, String tag, String message, Throwable t) {
+	protected String composeEntry(LogLevel level, Thread thread, String tag, String message, Throwable t) {
 		return composer.composeEntry(level, thread, tag, message, t);
 	}
 }

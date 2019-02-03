@@ -27,7 +27,7 @@ class LogEntry {
 
 	LogLevel level;
 
-	String thread;
+	Thread thread;
 
 	String tag;
 
@@ -35,7 +35,7 @@ class LogEntry {
 
 	Throwable t;
 
-	LogEntry set(LogLevel level, String thread, String tag, String message, Throwable t) {
+	LogEntry set(LogLevel level, Thread thread, String tag, String message, Throwable t) {
 		this.timestamp = System.currentTimeMillis();
 		this.level = level;
 		this.thread = thread;

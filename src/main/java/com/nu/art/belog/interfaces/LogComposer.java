@@ -26,5 +26,5 @@ import com.nu.art.belog.consts.LogLevel;
  */
 public interface LogComposer {
 
-	String composeEntry(LogLevel level, String thread, String tag, String message, Throwable t);
+	String composeEntry(LogLevel level, Thread thread, String tag, String message, Throwable t);
 }

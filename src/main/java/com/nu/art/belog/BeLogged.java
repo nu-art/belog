@@ -53,11 +53,11 @@ public final class BeLogged {
 		if (!(level.ordinal() >= minLogLevel.ordinal() && level.ordinal() <= maxLogLevel.ordinal()))
 			return;
 
-		final String thread = Thread.currentThread().getName();
+		Thread thread = Thread.currentThread();
 		String formattedMessage = params == null || params.length == 0 ? message : null;
 
 		for (BeLoggedClient client : clients) {
-			if (!client.loggableCondition.isLoggable(level, thread, tag, formattedMessage, t))
+			if (!client.loggableCondition.isLoggable(level, Thread.currentThread(), tag, formattedMessage, t))
 				continue;
 
 			if (formattedMessage == null && message != null)

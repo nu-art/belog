@@ -4,5 +4,5 @@ import com.nu.art.belog.consts.LogLevel;
 
 public interface LoggableCondition {
 
-	boolean isLoggable(LogLevel level, String thread, String tag, String formattedMessage, Throwable t);
+	boolean isLoggable(LogLevel level, Thread thread, String tag, String formattedMessage, Throwable t);
 }

@@ -29,7 +29,7 @@ public class DefaultLogClient
 	extends BeLoggedClient {
 
 	@Override
-	protected void log(LogLevel level, String thread, String tag, String message, Throwable t) {
+	protected void log(LogLevel level, Thread thread, String tag, String message, Throwable t) {
 		String s = composer.composeEntry(level, thread, tag, message, t);
 		switch (level) {
 

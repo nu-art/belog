@@ -34,24 +34,24 @@ public class DefaultLogComposer
 	implements com.nu.art.belog.interfaces.LogComposer {
 
 	private final static SimpleDateFormat DefaultTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZ");
-	private SynchronizedObject<StringBuffer> buffers = new SynchronizedObject<>(new Getter<StringBuffer>() {
+	private SynchronizedObject<StringBuilder> buffers = new SynchronizedObject<>(new Getter<StringBuilder>() {
 		@Override
-		public StringBuffer get() {
-			return new StringBuffer();
+		public StringBuilder get() {
+			return new StringBuilder();
 		}
 	});
 
 	private final Date date = new Date();
 
 	@Override
-	public synchronized String composeEntry(LogLevel level, String thread, String tag, String message, Throwable t) {
+	public synchronized String composeEntry(LogLevel level, Thread thread, String tag, String message, Throwable t) {
 		date.setTime(System.currentTimeMillis());
 
-		StringBuffer buffer = buffers.get();
+		StringBuilder buffer = buffers.get();
 		buffer.setLength(0);
 		buffer.append(DefaultTimeFormat.format(date)).append(" ");
 		buffer.append(level).append("/");
-		buffer.append(thread).append("/");
+		buffer.append(thread.getName()).append("/");
 		buffer.append(tag).append(": ");
 
 		if (message != null)

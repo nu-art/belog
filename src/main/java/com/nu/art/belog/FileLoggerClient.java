@@ -167,6 +167,7 @@ public class FileLoggerClient
 	private void rotateFile(int index) {
 		File logTextFile = getLogTextFile(index);
 		File logZipFile = getLogZipFile(index);
+		File newLogZipFile = getLogZipFile(index + 1);
 
 		try {
 			if (!logTextFile.exists() && !logZipFile.exists())
@@ -175,10 +176,10 @@ public class FileLoggerClient
 			if (logTextFile.exists())
 				FileTools.archive(logZipFile, logTextFile);
 
-			File newLogZipFile = getLogZipFile(index + 1);
 			FileTools.renameFile(logZipFile, newLogZipFile);
 		} catch (Exception e) {
-			System.err.printf("Cannot rotate file from: " + logTextFile.getName() + " ==> " + logZipFile.getName(), e);
+			System.err.println("Cannot rotate file from: " + logZipFile.getName() + " ==> " + newLogZipFile.getName());
+			e.printStackTrace();
 			disable(e);
 		}
 	}

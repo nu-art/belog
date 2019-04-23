@@ -122,6 +122,13 @@ public class FileLoggerClient
 	private void rotate() {
 		System.out.println("rotating files");
 
+		try {
+			FileTools.delete(getLogZipFile(filesCount - 1));
+		} catch (IOException e) {
+			disable(e);
+			return;
+		}
+
 		for (int i = filesCount - 2; i >= 0; i--) {
 			rotateFile(i);
 		}
@@ -178,8 +185,7 @@ public class FileLoggerClient
 
 			FileTools.renameFile(logZipFile, newLogZipFile);
 		} catch (Exception e) {
-			System.err.println("Cannot rotate file from: " + logZipFile.getName() + " ==> " + newLogZipFile.getName());
-			e.printStackTrace();
+			System.err.println("Cannot rotate file from: " + logZipFile.getName() + " ==> " + newLogZipFile.getName() + "\n");
 			disable(e);
 		}
 	}

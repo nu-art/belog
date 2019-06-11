@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-package com.nu.art.belog;
+package com.nu.art.belog.loggers;
 
 import com.nu.art.belog.consts.LogLevel;
 
@@ -43,5 +43,10 @@ class LogEntry {
 		this.message = message;
 		this.t = t;
 		return this;
+	}
+
+	@Override
+	public String toString() {
+		return message;
 	}
 }

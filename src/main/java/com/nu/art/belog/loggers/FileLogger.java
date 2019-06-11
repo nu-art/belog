@@ -17,11 +17,19 @@
  * limitations under the License.
  */
 
-package com.nu.art.belog;
+package com.nu.art.belog.loggers;
 
+import com.nu.art.belog.BeConfig;
+import com.nu.art.belog.BeConfig.LoggerConfig;
+import com.nu.art.belog.BeConfig.Rule;
+import com.nu.art.belog.LoggerClient;
+import com.nu.art.belog.LoggerValidator;
+import com.nu.art.belog.loggers.FileLogger.Config_FileLogger;
 import com.nu.art.belog.consts.LogLevel;
+import com.nu.art.core.exceptions.runtime.BadImplementationException;
 import com.nu.art.core.tools.ArrayTools;
 import com.nu.art.core.tools.FileTools;
+import com.nu.art.core.tools.SizeTools;
 import com.nu.art.core.utils.InstanceRecycler;
 import com.nu.art.core.utils.InstanceRecycler.Instantiator;
 import com.nu.art.core.utils.PoolQueue;
@@ -34,16 +42,12 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FileLoggerClient
-	extends BeLoggedClient {
+public class FileLogger
+	extends LoggerClient<Config_FileLogger> {
 
-	private File logFolder;
-
-	private long maxFileSize;
-
-	private String fileNamePrefix;
-
-	private int filesCount;
+	public static final Rule Rule_AllToFileLogger = new Rule().setLoggerKeys(Config_FileLogger.KEY);
+	public static final Config_FileLogger LogConfig_FileLogger = (Config_FileLogger) new Config_FileLogger().setKey(Config_FileLogger.KEY);
+	public static final BeConfig Config_FastFileLogger = new BeConfig().setRules(Rule_AllToFileLogger).setLoggersConfig(LogConfig_FileLogger);
 
 	private boolean enable = true;
 
@@ -54,13 +58,12 @@ public class FileLoggerClient
 	private PoolQueue<LogEntry> queue = new PoolQueue<LogEntry>() {
 		@Override
 		protected void onExecutionError(LogEntry item, Throwable e) {
-
+			System.err.println("Error writing log: " + item);
+			e.printStackTrace();
 		}
 
 		@Override
-		protected void executeAction(LogEntry logEntry)
-			throws Exception {
-
+		protected void executeAction(LogEntry logEntry) {
 			try {
 				String logMessage = composer.composeEntry(logEntry.level, logEntry.thread, logEntry.tag, logEntry.message, logEntry.t);
 				try {
@@ -72,7 +75,7 @@ public class FileLoggerClient
 				}
 
 				written += logMessage.getBytes().length;
-				if (written >= maxFileSize)
+				if (written >= config.size)
 					rotate();
 			} finally {
 				recycler.recycle(logEntry);
@@ -80,11 +83,18 @@ public class FileLoggerClient
 		}
 	};
 
-	public void set(File logFolder, String fileNamePrefix, long maxFileSize, int filesCount) {
-		this.logFolder = logFolder;
-		this.maxFileSize = maxFileSize;
-		this.fileNamePrefix = fileNamePrefix;
-		this.filesCount = filesCount;
+	/**
+	 * Use {@link #setConfig(LoggerConfig)} instead
+	 */
+	@Deprecated
+	public FileLogger set(File logFolder, String fileNamePrefix, long maxFileSize, int filesCount) {
+		Config_FileLogger config = new Config_FileLogger();
+		config.count = filesCount;
+		config.size = maxFileSize;
+		config.fileName = fileNamePrefix;
+		config.folder = logFolder;
+		this.setConfig(config);
+		return this;
 	}
 
 	private void disable(Throwable t) {
@@ -96,13 +106,13 @@ public class FileLoggerClient
 	@Override
 	protected void init() {
 		try {
-			FileTools.mkDir(logFolder);
+			FileTools.mkDir(config.folder);
 		} catch (IOException e) {
 			disable(e);
 		}
 
 		File logFile = getLogTextFile(0);
-		if (!logFile.exists() || logFile.length() >= maxFileSize)
+		if (!logFile.exists() || logFile.length() >= config.size)
 			rotate();
 		else {
 			try {
@@ -123,31 +133,25 @@ public class FileLoggerClient
 		System.out.println("rotating files");
 
 		try {
-			FileTools.delete(getLogZipFile(filesCount - 1));
+			FileTools.delete(getLogZipFile(config.count - 1));
 		} catch (IOException e) {
 			disable(e);
 			return;
 		}
 
-		for (int i = filesCount - 2; i >= 0; i--) {
+		for (int i = config.count - 2; i >= 0; i--) {
 			rotateFile(i);
 		}
 
 		try {
 			dismissLogWriter();
 			File file = getLogTextFile(0);
-			if (file.exists())
-				FileTools.delete(file);
-
-			if ((file.exists() && !file.delete()) || !file.createNewFile()) {
-				//				disable();
-				return;
-			}
-
+			FileTools.delete(file);
+			FileTools.createNewFile(file);
 			createLogWriter(file);
 		} catch (IOException e) {
-			//			disable();
-			e.printStackTrace();
+			System.err.println("Cannot create new logWriter for file");
+			disable(e);
 		}
 	}
 
@@ -190,24 +194,20 @@ public class FileLoggerClient
 		}
 	}
 
-	public File getLogTextFile(int i) {
+	private File getLogTextFile(int i) {
 		return getFile(i, "txt");
 	}
 
-	public File getLogZipFile(int i) {
+	private File getLogZipFile(int i) {
 		return getFile(i, "zip");
 	}
 
 	private File getFile(int i, String suffix) {
-		return new File(logFolder, fileNamePrefix + "-" + getIndexAsString(i) + "." + suffix);
-	}
-
-	public int getFilesCount() {
-		return filesCount;
+		return new File(config.folder, config.fileName + "-" + getIndexAsString(i) + "." + suffix);
 	}
 
 	private String getIndexAsString(int index) {
-		int numDigits = (filesCount + "").length();
+		int numDigits = (config.count + "").length();
 		int missingZeros = numDigits - (index + "").length();
 
 		String toRet = "";
@@ -220,7 +220,7 @@ public class FileLoggerClient
 
 	public final File[] getAllLogFiles() {
 		List<File> filesToZip = new ArrayList<>();
-		for (int i = 0; i < filesCount; i++) {
+		for (int i = 0; i < config.count; i++) {
 			File file = getLogTextFile(i);
 			if (file.exists())
 				filesToZip.add(file);
@@ -247,5 +247,63 @@ public class FileLoggerClient
 
 		LogEntry instance = recycler.getInstance().set(level, thread, tag, message, t);
 		queue.addItem(instance);
+	}
+
+	public static class FileLoggerValidator
+		extends LoggerValidator<Config_FileLogger, FileLogger> {
+
+		public FileLoggerValidator() {
+			super(FileLogger.class);
+		}
+
+		@Override
+		protected void validateConfig(Config_FileLogger config) {
+			if (config.folder == null)
+				throw new BadImplementationException("No output folder specified of logger: " + config.key);
+
+			if (config.size < SizeTools.MegaByte)
+				throw new BadImplementationException("File size MUST be >= 1 MB");
+
+			if (config.count < 3)
+				throw new BadImplementationException("Rotation count MUST be >= 3");
+
+			if (config.fileName == null)
+				config.fileName = "logger-" + config.key;
+		}
+	}
+
+	public static class Config_FileLogger
+		extends LoggerConfig {
+
+		public static final String KEY = FileLogger.class.getSimpleName();
+
+		File folder;
+		String fileName;
+		long size = 5 * SizeTools.MegaByte;
+		int count = 10;
+
+		public Config_FileLogger() {
+			super(KEY);
+		}
+
+		public Config_FileLogger setFolder(File folder) {
+			this.folder = folder;
+			return this;
+		}
+
+		public Config_FileLogger setFileName(String fileName) {
+			this.fileName = fileName;
+			return this;
+		}
+
+		public Config_FileLogger setCount(int count) {
+			this.count = count;
+			return this;
+		}
+
+		public Config_FileLogger setSize(long size) {
+			this.size = size;
+			return this;
+		}
 	}
 }

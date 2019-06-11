@@ -1,6 +1,7 @@
 package com.nu.art.belog;
 
 import com.nu.art.belog.consts.LogLevel;
+import com.nu.art.belog.loggers.JavaLogger;
 import com.nu.art.core.exceptions.runtime.NotImplementedYetException;
 
 import org.junit.Before;
@@ -14,7 +15,7 @@ public class TestBelogged
 
 	private static int Count_Repeat = 1000000;
 	private static boolean setUpIsDone = false;
-	private DefaultLogClient logClient;
+	private JavaLogger logClient;
 
 	@Before
 	public void setUp() {
@@ -22,7 +23,7 @@ public class TestBelogged
 			return;
 		}
 
-		logClient = new DefaultLogClient();
+		logClient = new JavaLogger();
 		BeLogged.getInstance().addClient(logClient);
 		setUpIsDone = true;
 	}

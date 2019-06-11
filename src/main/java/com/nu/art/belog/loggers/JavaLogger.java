@@ -17,16 +17,26 @@
  * limitations under the License.
  */
 
-package com.nu.art.belog;
+package com.nu.art.belog.loggers;
 
+import com.nu.art.belog.BeConfig;
+import com.nu.art.belog.BeConfig.LoggerConfig;
+import com.nu.art.belog.BeConfig.Rule;
+import com.nu.art.belog.LoggerClient;
+import com.nu.art.belog.LoggerValidator;
 import com.nu.art.belog.consts.LogLevel;
+import com.nu.art.belog.loggers.JavaLogger.Config_JavaLogger;
 
 /**
  * Created by TacB0sS on 28-Feb 2017.
  */
 
-public class DefaultLogClient
-	extends BeLoggedClient {
+public class JavaLogger
+	extends LoggerClient<Config_JavaLogger> {
+
+	public static final Rule Rule_AllToJavaLogger = new Rule().setLoggerKeys(Config_JavaLogger.KEY);
+	public static final LoggerConfig LogConfig_JavaLogger = new Config_JavaLogger().setKey(Config_JavaLogger.KEY);
+	public static final BeConfig Config_FastJavaLogger = new BeConfig().setRules(Rule_AllToJavaLogger).setLoggersConfig(LogConfig_JavaLogger);
 
 	@Override
 	protected void log(LogLevel level, Thread thread, String tag, String message, Throwable t) {
@@ -42,6 +52,24 @@ public class DefaultLogClient
 			case Error:
 			case Assert:
 				System.err.print(s);
+		}
+	}
+
+	public static class JavaLoggerValidator
+		extends LoggerValidator<Config_JavaLogger, JavaLogger> {
+
+		public JavaLoggerValidator() {
+			super(JavaLogger.class);
+		}
+	}
+
+	public static class Config_JavaLogger
+		extends LoggerConfig {
+
+		public static final String KEY = JavaLogger.class.getSimpleName();
+
+		public Config_JavaLogger() {
+			super(KEY);
 		}
 	}
 }

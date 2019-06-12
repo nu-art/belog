@@ -54,8 +54,11 @@ public class DefaultLogComposer
 		buffer.append(thread.getName()).append("/");
 		buffer.append(tag).append(": ");
 
-		if (message != null)
-			buffer.append(message).append("\n");
+		if (message != null) {
+			buffer.append(message);
+			if (!message.endsWith("\n"))
+				buffer.append("\n");
+		}
 
 		if (t != null)
 			buffer.append(ExceptionTools.getStackTrace(t)).append("\n");

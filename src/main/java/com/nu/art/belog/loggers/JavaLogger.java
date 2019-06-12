@@ -23,7 +23,7 @@ import com.nu.art.belog.BeConfig;
 import com.nu.art.belog.BeConfig.LoggerConfig;
 import com.nu.art.belog.BeConfig.Rule;
 import com.nu.art.belog.LoggerClient;
-import com.nu.art.belog.LoggerValidator;
+import com.nu.art.belog.LoggerDescriptor;
 import com.nu.art.belog.consts.LogLevel;
 import com.nu.art.belog.loggers.JavaLogger.Config_JavaLogger;
 
@@ -55,11 +55,11 @@ public class JavaLogger
 		}
 	}
 
-	public static class JavaLoggerValidator
-		extends LoggerValidator<Config_JavaLogger, JavaLogger> {
+	public static class JavaLoggerDescriptor
+		extends LoggerDescriptor<Config_JavaLogger, JavaLogger> {
 
-		public JavaLoggerValidator() {
-			super(JavaLogger.class);
+		public JavaLoggerDescriptor() {
+			super(Config_JavaLogger.KEY, Config_JavaLogger.class, JavaLogger.class);
 		}
 	}
 

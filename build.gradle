@@ -22,6 +22,8 @@ applyJavaLibrary()
 dependencies {
     api(resolveDependency('reflection', 'com.nu-art-software', "${NU_ART_VERSION}"))
     api(resolveDependency('nu-art-core', 'com.nu-art-software', "${NU_ART_VERSION}"))
+    api("com.google.code.gson:gson:${GSON_VERSION}")
+
     testImplementation 'junit:junit:4.12'
 }
 

@@ -23,7 +23,7 @@ import com.nu.art.belog.BeConfig;
 import com.nu.art.belog.BeConfig.LoggerConfig;
 import com.nu.art.belog.BeConfig.Rule;
 import com.nu.art.belog.LoggerClient;
-import com.nu.art.belog.LoggerValidator;
+import com.nu.art.belog.LoggerDescriptor;
 import com.nu.art.belog.loggers.FileLogger.Config_FileLogger;
 import com.nu.art.belog.consts.LogLevel;
 import com.nu.art.core.exceptions.runtime.BadImplementationException;
@@ -92,7 +92,7 @@ public class FileLogger
 		config.count = filesCount;
 		config.size = maxFileSize;
 		config.fileName = fileNamePrefix;
-		config.folder = logFolder;
+		config.folder = logFolder.getAbsolutePath();
 		this.setConfig(config);
 		return this;
 	}
@@ -249,11 +249,15 @@ public class FileLogger
 		queue.addItem(instance);
 	}
 
-	public static class FileLoggerValidator
-		extends LoggerValidator<Config_FileLogger, FileLogger> {
+	public static class FileLoggerDescriptor
+		extends LoggerDescriptor<Config_FileLogger, FileLogger> {
 
-		public FileLoggerValidator() {
-			super(FileLogger.class);
+		public FileLoggerDescriptor() {
+			super(Config_FileLogger.KEY, Config_FileLogger.class, FileLogger.class);
+		}
+
+		public Class<Config_FileLogger> getConfigType() {
+			return Config_FileLogger.class;
 		}
 
 		@Override
@@ -277,16 +281,16 @@ public class FileLogger
 
 		public static final String KEY = FileLogger.class.getSimpleName();
 
-		File folder;
+		String folder;
 		String fileName;
-		long size = 5 * SizeTools.MegaByte;
+		long size = 10 * SizeTools.MegaByte;
 		int count = 10;
 
 		public Config_FileLogger() {
 			super(KEY);
 		}
 
-		public Config_FileLogger setFolder(File folder) {
+		public Config_FileLogger setFolder(String folder) {
 			this.folder = folder;
 			return this;
 		}
@@ -304,6 +308,12 @@ public class FileLogger
 		public Config_FileLogger setSize(long size) {
 			this.size = size;
 			return this;
+		}
+
+		@Override
+		@SuppressWarnings("MethodDoesntCallSuperMethod")
+		public Config_FileLogger clone() {
+			return new Config_FileLogger().setFileName(fileName).setFolder(folder).setCount(count).setSize(size);
 		}
 	}
 }

@@ -153,6 +153,7 @@ public final class BeLogged {
 		for (String s : logClients.keySet()) {
 			logClients.get(s).dispose();
 		}
+
 		logClients.clear();
 		this.rules = _config.rules;
 		for (LoggerConfig config : _config.configs) {
@@ -200,10 +201,10 @@ public final class BeLogged {
 			if (!(level.ordinal() >= rule.minLevel.ordinal() && level.ordinal() <= rule.maxLevel.ordinal()))
 				continue;
 
-			if (rule.thread != null && !thread.getName().matches(rule.thread))
+			if (rule.thread != null && !thread.getName().toLowerCase().matches(rule.thread))
 				continue;
 
-			if (rule.tag != null && !tag.matches(rule.tag))
+			if (rule.tag != null && !tag.toLowerCase().matches(rule.tag))
 				continue;
 
 			if (formattedMessage == null && message != null)

@@ -35,6 +35,10 @@ public abstract class LoggerClient<Config extends LoggerConfig> {
 		this.config = config;
 	}
 
+	public final Config getConfig() {
+		return config;
+	}
+
 	public final void setComposer(LogComposer composer) {
 		this.composer = composer;
 	}

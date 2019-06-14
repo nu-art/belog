@@ -7,6 +7,8 @@ import com.nu.art.core.exceptions.runtime.NotImplementedYetException;
 import org.junit.Before;
 import org.junit.Test;
 
+import static com.nu.art.belog.loggers.JavaLogger.Config_FastJavaLogger;
+
 /**
  * Created by TacB0sS on 23/04/2018.
  */
@@ -24,7 +26,7 @@ public class TestBelogged
 		}
 
 		logClient = new JavaLogger();
-		BeLogged.getInstance().addClient(logClient);
+		BeLogged.getInstance().setConfig(Config_FastJavaLogger);
 		setUpIsDone = true;
 	}
 
@@ -34,20 +36,23 @@ public class TestBelogged
 		log(LogLevel.Debug, "%s: Testing param", "Test");
 		log(LogLevel.Info, "Testing no param");
 
-		logClient.setLogLevel(LogLevel.Warning, LogLevel.Assert);
+		BeLogged.getInstance().setMinLogLevel(LogLevel.Warning);
+		BeLogged.getInstance().setMaxLogLevel(LogLevel.Assert);
 		log(LogLevel.Info, "Should NOT be shown");
 		log(LogLevel.Warning, "Should be shown warning");
 		log(LogLevel.Error, "Should be shown error");
 		log(LogLevel.Error, "Should be shown With exception", new NotImplementedYetException("Test Exception error"));
 
-		logClient.setLogLevel(LogLevel.Verbose, LogLevel.Warning);
+		BeLogged.getInstance().setMinLogLevel(LogLevel.Verbose);
+		BeLogged.getInstance().setMaxLogLevel(LogLevel.Warning);
 		log(LogLevel.Error, "Should NOT be shown error");
 		log(LogLevel.Debug, "Should be shown With exception", new NotImplementedYetException("Test Exception debug"));
 		log(LogLevel.Debug, "Should be shown With exception %s", new NotImplementedYetException("Test Exception debug"));
 		log(LogLevel.Debug, "Should be shown With param and exception %s and %s", "Donno", new NotImplementedYetException("Test Exception debug"));
 
 		log(LogLevel.Info, new NotImplementedYetException("Exception only"));
-		BeLogged.getInstance().setLogLevel(LogLevel.Warning, LogLevel.Assert);
+		BeLogged.getInstance().setMinLogLevel(LogLevel.Warning);
+		BeLogged.getInstance().setMaxLogLevel(LogLevel.Assert);
 		log(LogLevel.Info, "Should NOT be shown");
 		log(LogLevel.Warning, "testing log with %F in it");
 	}

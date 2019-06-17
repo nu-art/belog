@@ -63,7 +63,7 @@ public class BeConfig {
 	public static abstract class LoggerConfig {
 
 		public final String type;
-
+		public boolean isDefault;
 		public String key;
 
 		protected LoggerConfig(String type) {this.type = type;}

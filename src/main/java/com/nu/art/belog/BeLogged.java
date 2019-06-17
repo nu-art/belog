@@ -250,6 +250,7 @@ public final class BeLogged {
 				used.add(loggerKey);
 			}
 		}
+		used.clear();
 	}
 
 	public final Logger getLogger(Object objectForTag) {

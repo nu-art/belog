@@ -51,7 +51,7 @@ public class FileLogger
 
 	private boolean enable = true;
 
-	private OutputStreamWriter logWriter;
+	private volatile OutputStreamWriter logWriter;
 
 	private long written;
 
@@ -79,6 +79,8 @@ public class FileLogger
 					rotate();
 			} finally {
 				recycler.recycle(logEntry);
+				if (queue.getItemsCount() == 0 && !enable)
+					queue.kill();
 			}
 		}
 	};
@@ -97,6 +99,11 @@ public class FileLogger
 		return this;
 	}
 
+	@Override
+	protected void dispose() {
+		enable = false;
+	}
+
 	private void disable(Throwable t) {
 		System.err.println("FileLogger '" + config.key + "' - DISABLING FILE LOGGER");
 		t.printStackTrace();
@@ -109,6 +116,7 @@ public class FileLogger
 			FileTools.mkDir(config.folder);
 		} catch (IOException e) {
 			disable(e);
+			return;
 		}
 
 		File logFile = getLogTextFile(0);
@@ -129,7 +137,7 @@ public class FileLogger
 		queue.createThreads("File logger", 1);
 	}
 
-	private void rotate() {
+	public void rotate() {
 		System.out.println("FileLogger '" + config.key + "' - rotating files");
 
 		try {
@@ -144,7 +152,6 @@ public class FileLogger
 		}
 
 		try {
-			dismissLogWriter();
 			File file = getLogTextFile(0);
 			FileTools.delete(file);
 			FileTools.createNewFile(file);
@@ -155,23 +162,23 @@ public class FileLogger
 		}
 	}
 
-	private void dismissLogWriter() {
-		if (logWriter != null) {
-			try {
-				logWriter.flush();
-				logWriter.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
 	private void createLogWriter(File file) {
 		written = file.length();
+		OutputStreamWriter oldLogWriter = this.logWriter;
 		try {
 			logWriter = new OutputStreamWriter(new FileOutputStream(file, true));
 		} catch (FileNotFoundException e) {
 			disable(e);
+		}
+
+		if (oldLogWriter == null)
+			return;
+
+		try {
+			oldLogWriter.flush();
+			oldLogWriter.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -308,6 +315,27 @@ public class FileLogger
 		public Config_FileLogger setSize(long size) {
 			this.size = size;
 			return this;
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o)
+				return true;
+			if (o == null || getClass() != o.getClass())
+				return false;
+
+			Config_FileLogger that = (Config_FileLogger) o;
+
+			if (folder != null ? !folder.equals(that.folder) : that.folder != null)
+				return false;
+			return fileName != null ? fileName.equals(that.fileName) : that.fileName == null;
+		}
+
+		@Override
+		public int hashCode() {
+			int result = folder != null ? folder.hashCode() : 0;
+			result = 31 * result + (fileName != null ? fileName.hashCode() : 0);
+			return result;
 		}
 
 		@Override

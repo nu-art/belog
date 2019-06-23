@@ -44,6 +44,7 @@ import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -162,7 +163,7 @@ public final class BeLogged {
 
 		for (LoggerConfig config : _config.configs) {
 			if (config.key == null)
-				throw new BadImplementationException("logger MUST have a key!! ");
+				throw new BadImplementationException("logger MUST have a key!!");
 
 			for (LoggerConfig otherConfig : _config.configs) {
 				if (otherConfig == config)
@@ -173,17 +174,29 @@ public final class BeLogged {
 			}
 		}
 
+		/*
+			if a log config already in use in the runtime belogged instance, there is no point in disposing and re-initializing it
+		 */
+		ArrayList<LoggerConfig> configsToAdd = new ArrayList<>(Arrays.asList(_config.configs));
 		Map<String, LoggerClient> logClients = this.logClients;
 		for (String s : logClients.keySet()) {
-			LoggerClient loggerClient = logClients.remove(s);
+			LoggerClient loggerClient = logClients.get(s);
 			if (loggerClient == null)
 				continue;
 
+			int configIndex = configsToAdd.indexOf(loggerClient.config);
+			if (configIndex > -1) {
+				loggerClient.config = configsToAdd.get(configIndex);
+				configsToAdd.remove(configIndex);
+				continue;
+			}
+
+			loggerClient = logClients.remove(s);
 			loggerClient.dispose();
 		}
 
 		ArrayList<String> _defaultLoggers = new ArrayList<>();
-		for (LoggerConfig config : _config.configs) {
+		for (LoggerConfig config : configsToAdd) {
 			LoggerClient loggerClient = createLoggerFromConfig(config);
 			loggerClient.init();
 			this.logClients.put(config.key, loggerClient);
@@ -260,6 +273,10 @@ public final class BeLogged {
 		else
 			tag = objectForTag.getClass().getSimpleName();
 		return new Logger().setTag(tag);
+	}
+
+	public LoggerClient getClient(String loggerKey) {
+		return logClients.get(loggerKey);
 	}
 
 	public LoggerClient[] getClients() {

@@ -3,6 +3,8 @@ package com.nu.art.belog;
 import com.nu.art.belog.consts.LogLevel;
 import com.nu.art.core.tools.ArrayTools;
 
+import java.util.regex.Pattern;
+
 public class BeConfig {
 
 	public Rule[] rules = {};
@@ -33,6 +35,9 @@ public class BeConfig {
 		LogLevel maxLevel = LogLevel.Assert;
 
 		String[] loggerKeys;
+
+		transient Pattern _tag;
+		transient Pattern _thread;
 
 		public Rule setLoggerKeys(String... loggerKeys) {
 			this.loggerKeys = loggerKeys;

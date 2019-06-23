@@ -49,6 +49,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Pattern;
 
 public final class BeLogged {
 
@@ -207,6 +208,12 @@ public final class BeLogged {
 
 		String[] defaultLoggers = ArrayTools.asArray(_defaultLoggers, String.class);
 		for (Rule rule : _config.rules) {
+			if (rule.thread != null)
+				rule._thread = Pattern.compile(rule.thread, Pattern.CASE_INSENSITIVE);
+
+			if (rule.tag != null)
+				rule._tag = Pattern.compile(rule.tag, Pattern.CASE_INSENSITIVE);
+
 			if (rule.loggerKeys != null && rule.loggerKeys.length > 0)
 				continue;
 
@@ -242,10 +249,10 @@ public final class BeLogged {
 			if (!(level.ordinal() >= rule.minLevel.ordinal() && level.ordinal() <= rule.maxLevel.ordinal()))
 				continue;
 
-			if (rule.thread != null && !thread.getName().toLowerCase().matches(rule.thread))
+			if (rule._thread != null && !rule._thread.matcher(thread.getName()).matches())
 				continue;
 
-			if (rule.tag != null && !tag.toLowerCase().matches(rule.tag))
+			if (rule._tag != null && !rule._tag.matcher(tag).matches())
 				continue;
 
 			if (formattedMessage == null && message != null)

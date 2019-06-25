@@ -44,8 +44,8 @@ public class DefaultLogComposer
 	private final Date date = new Date();
 
 	@Override
-	public synchronized String composeEntry(LogLevel level, Thread thread, String tag, String message, Throwable t) {
-		date.setTime(System.currentTimeMillis());
+	public synchronized String composeEntry(long timestamp, LogLevel level, Thread thread, String tag, String message, Throwable t) {
+		date.setTime(timestamp);
 
 		StringBuilder buffer = buffers.get();
 		buffer.setLength(0);

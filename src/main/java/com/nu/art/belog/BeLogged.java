@@ -258,6 +258,7 @@ public final class BeLogged {
 			if (formattedMessage == null && message != null)
 				formattedMessage = String.format(message, params);
 
+			long timestamp = System.currentTimeMillis();
 			for (String loggerKey : rule.loggerKeys) {
 				if (used.contains(loggerKey))
 					continue;
@@ -266,7 +267,7 @@ public final class BeLogged {
 				if (client == null)
 					continue;
 
-				client._log(level, thread, tag, formattedMessage, t);
+				client._log(timestamp, level, thread, tag, formattedMessage, t);
 				used.add(loggerKey);
 			}
 		}

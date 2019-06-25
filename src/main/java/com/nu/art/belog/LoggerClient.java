@@ -45,15 +45,15 @@ public abstract class LoggerClient<Config extends LoggerConfig> {
 
 	protected void init() { }
 
-	protected void _log(LogLevel level, Thread thread, String tag, String message, Throwable t) {
-		log(level, thread, tag, message, t);
+	final void _log(long timestamp, LogLevel level, Thread thread, String tag, String message, Throwable t) {
+		log(timestamp, level, thread, tag, message, t);
 	}
 
-	protected abstract void log(LogLevel level, Thread thread, String tag, String message, Throwable t);
+	protected abstract void log(long timestamp, LogLevel level, Thread thread, String tag, String message, Throwable t);
 
 	protected void dispose() {}
 
-	protected String composeEntry(LogLevel level, Thread thread, String tag, String message, Throwable t) {
-		return composer.composeEntry(level, thread, tag, message, t);
+	protected String composeEntry(long timestamp, LogLevel level, Thread thread, String tag, String message, Throwable t) {
+		return composer.composeEntry(timestamp, level, thread, tag, message, t);
 	}
 }

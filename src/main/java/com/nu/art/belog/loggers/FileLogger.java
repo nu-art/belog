@@ -65,7 +65,7 @@ public class FileLogger
 		@Override
 		protected void executeAction(LogEntry logEntry) {
 			try {
-				String logMessage = composer.composeEntry(logEntry.level, logEntry.thread, logEntry.tag, logEntry.message, logEntry.t);
+				String logMessage = composer.composeEntry(logEntry.timestamp, logEntry.level, logEntry.thread, logEntry.tag, logEntry.message, logEntry.t);
 				try {
 					logWriter.write(logMessage);
 					logWriter.flush();
@@ -248,11 +248,11 @@ public class FileLogger
 	});
 
 	@Override
-	protected void log(LogLevel level, Thread thread, String tag, String message, Throwable t) {
+	protected void log(long timestamp, LogLevel level, Thread thread, String tag, String message, Throwable t) {
 		if (!enable)
 			return;
 
-		LogEntry instance = recycler.getInstance().set(level, thread, tag, message, t);
+		LogEntry instance = recycler.getInstance().set(timestamp, level, thread, tag, message, t);
 		queue.addItem(instance);
 	}
 
@@ -326,8 +326,12 @@ public class FileLogger
 
 			Config_FileLogger that = (Config_FileLogger) o;
 
+			if (!key.equals(that.key))
+				return false;
+
 			if (folder != null ? !folder.equals(that.folder) : that.folder != null)
 				return false;
+
 			return fileName != null ? fileName.equals(that.fileName) : that.fileName == null;
 		}
 

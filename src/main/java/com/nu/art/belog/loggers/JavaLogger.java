@@ -39,8 +39,8 @@ public class JavaLogger
 	public static final BeConfig Config_FastJavaLogger = new BeConfig().setRules(Rule_AllToJavaLogger).setLoggersConfig(LogConfig_JavaLogger);
 
 	@Override
-	protected void log(LogLevel level, Thread thread, String tag, String message, Throwable t) {
-		String s = composer.composeEntry(level, thread, tag, message, t);
+	protected void log(long timestamp, LogLevel level, Thread thread, String tag, String message, Throwable t) {
+		String s = composer.composeEntry(timestamp, level, thread, tag, message, t);
 		switch (level) {
 
 			case Verbose:
@@ -70,6 +70,19 @@ public class JavaLogger
 
 		public Config_JavaLogger() {
 			super(KEY);
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o)
+				return true;
+
+			return o != null && getClass() == o.getClass();
+		}
+
+		@Override
+		public int hashCode() {
+			return KEY.hashCode();
 		}
 	}
 }

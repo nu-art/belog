@@ -24,9 +24,10 @@ import com.nu.art.belog.BeConfig.LoggerConfig;
 import com.nu.art.belog.BeConfig.Rule;
 import com.nu.art.belog.LoggerClient;
 import com.nu.art.belog.LoggerDescriptor;
-import com.nu.art.belog.loggers.FileLogger.Config_FileLogger;
 import com.nu.art.belog.consts.LogLevel;
+import com.nu.art.belog.loggers.FileLogger.Config_FileLogger;
 import com.nu.art.core.exceptions.runtime.BadImplementationException;
+import com.nu.art.core.exceptions.runtime.BugSerachException;
 import com.nu.art.core.tools.ArrayTools;
 import com.nu.art.core.tools.FileTools;
 import com.nu.art.core.tools.SizeTools;
@@ -35,7 +36,6 @@ import com.nu.art.core.utils.InstanceRecycler.Instantiator;
 import com.nu.art.core.utils.PoolQueue;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -49,6 +49,7 @@ public class FileLogger
 	public static final Config_FileLogger LogConfig_FileLogger = (Config_FileLogger) new Config_FileLogger().setKey(Config_FileLogger.KEY);
 	public static final BeConfig Config_FastFileLogger = new BeConfig().setRules(Rule_AllToFileLogger).setLoggersConfig(LogConfig_FileLogger);
 
+	private Throwable failure;
 	private boolean enable = true;
 
 	private volatile OutputStreamWriter logWriter;
@@ -69,14 +70,19 @@ public class FileLogger
 				try {
 					logWriter.write(logMessage);
 					logWriter.flush();
-				} catch (IOException e) {
-					disable(e);
+				} catch (Exception e) {
+					disable(new BugSerachException("Error writing log to file", e));
 					return;
 				}
 
 				written += logMessage.getBytes().length;
-				if (written >= config.size)
-					rotate();
+				if (written >= config.size) {
+					try {
+						rotate();
+					} catch (Exception e) {
+						disable(new BugSerachException("Error rotating files", e));
+					}
+				}
 			} finally {
 				recycler.recycle(logEntry);
 				if (queue.getItemsCount() == 0 && !enable)
@@ -106,7 +112,9 @@ public class FileLogger
 
 	private void disable(Throwable t) {
 		System.err.println("FileLogger '" + config.key + "' - DISABLING FILE LOGGER");
+		System.err.println(t.getMessage());
 		t.printStackTrace();
+		failure = t;
 		enable = false;
 	}
 
@@ -120,56 +128,38 @@ public class FileLogger
 		}
 
 		File logFile = getLogTextFile(0);
-		if (!logFile.exists() || logFile.length() >= config.size)
-			rotate();
-		else {
-			try {
-				FileTools.createNewFile(logFile);
-			} catch (IOException e) {
-				disable(e);
-				return;
-			}
-			written = logFile.length();
+		try {
 			createLogWriter(logFile);
+		} catch (IOException e) {
+			disable(new BugSerachException("FileLogger '" + config.key + "' - Cannot create new logWriter for file: " + logFile.getAbsolutePath(), e));
 		}
-
 		// Starting the queue after the setup is completed
 		queue.createThreads("File logger", 1);
 	}
 
-	public void rotate() {
+	public void rotate()
+		throws IOException {
 		System.out.println("FileLogger '" + config.key + "' - rotating files");
 
-		try {
-			FileTools.delete(getLogZipFile(config.count - 1));
-		} catch (IOException e) {
-			disable(e);
-			return;
-		}
+		FileTools.delete(getLogZipFile(config.count - 1));
 
 		for (int i = config.count - 2; i >= 0; i--) {
 			rotateFile(i);
 		}
 
-		try {
-			File file = getLogTextFile(0);
-			FileTools.delete(file);
-			FileTools.createNewFile(file);
-			createLogWriter(file);
-		} catch (IOException e) {
-			System.err.println("FileLogger '" + config.key + "' - Cannot create new logWriter for file");
-			disable(e);
-		}
+		File file = getLogTextFile(0);
+		FileTools.delete(file);
+		createLogWriter(file);
 	}
 
-	private void createLogWriter(File file) {
-		written = file.length();
+	private void createLogWriter(File logFile)
+		throws IOException {
+		if (logFile.exists())
+			FileTools.createNewFile(logFile);
+
+		written = logFile.length();
 		OutputStreamWriter oldLogWriter = this.logWriter;
-		try {
-			logWriter = new OutputStreamWriter(new FileOutputStream(file, true));
-		} catch (FileNotFoundException e) {
-			disable(e);
-		}
+		logWriter = new OutputStreamWriter(new FileOutputStream(logFile, true));
 
 		if (oldLogWriter == null)
 			return;
@@ -272,8 +262,8 @@ public class FileLogger
 			if (config.folder == null)
 				throw new BadImplementationException("No output folder specified of logger: " + config.key);
 
-			if (config.size < SizeTools.MegaByte)
-				throw new BadImplementationException("File size MUST be >= 1 MB");
+			if (config.size < 10 * SizeTools.KiloByte)
+				throw new BadImplementationException("File size MUST be >= 10kb");
 
 			if (config.count < 3)
 				throw new BadImplementationException("Rotation count MUST be >= 3");

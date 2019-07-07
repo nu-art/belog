@@ -31,17 +31,20 @@ import com.nu.art.belog.loggers.FileLogger.FileLoggerDescriptor;
 import com.nu.art.belog.loggers.JavaLogger.JavaLoggerDescriptor;
 import com.nu.art.core.exceptions.runtime.BadImplementationException;
 import com.nu.art.core.exceptions.runtime.ImplementationMissingException;
+import com.nu.art.core.interfaces.Condition;
 import com.nu.art.core.interfaces.Getter;
 import com.nu.art.core.interfaces.Serializer;
 import com.nu.art.core.replacer.Replacer;
 import com.nu.art.core.tools.ArrayTools;
 import com.nu.art.core.tools.StreamTools;
 import com.nu.art.core.utils.SynchronizedObject;
+import com.nu.art.reflection.tools.ART_Tools;
 import com.nu.art.reflection.tools.ReflectiveTools;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -88,7 +91,14 @@ public final class BeLogged {
 					throw new ImplementationMissingException("No descriptor was defined for type: " + type);
 
 				LoggerConfig config = context.deserialize(json, loggerDescriptor.configType);
-				Field[] fields = config.getClass().getDeclaredFields();
+
+				Field[] fields = ART_Tools.getAllFieldsInHierarchy(config.getClass(), new Condition<Field>() {
+					@Override
+					public boolean checkCondition(Field field) {
+						return !Modifier.isTransient(field.getModifiers()) && !Modifier.isStatic(field.getModifiers());
+					}
+				});
+
 				for (Field field : fields) {
 					if (field.getType() != String.class)
 						continue;

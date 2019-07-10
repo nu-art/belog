@@ -59,8 +59,7 @@ public class FileLogger
 	private PoolQueue<LogEntry> queue = new PoolQueue<LogEntry>() {
 		@Override
 		protected void onExecutionError(LogEntry item, Throwable e) {
-			System.err.println("FileLogger '" + config.key + "' - Error writing log: " + item);
-			e.printStackTrace();
+			logError("Error writing log: " + item, e);
 		}
 
 		@Override
@@ -111,8 +110,8 @@ public class FileLogger
 	}
 
 	private void disable(Throwable t) {
-		System.err.println("FileLogger '" + config.key + "' - DISABLING FILE LOGGER");
-		System.err.println(t.getMessage());
+		logError("DISABLING FILE LOGGER");
+		logError(t.getMessage());
 		t.printStackTrace();
 		failure = t;
 		enable = false;
@@ -131,15 +130,17 @@ public class FileLogger
 		try {
 			createLogWriter(logFile);
 		} catch (IOException e) {
-			disable(new BugSerachException("FileLogger '" + config.key + "' - Cannot create new logWriter for file: " + logFile.getAbsolutePath(), e));
+			disable(new BugSerachException("Cannot create new logWriter for file: " + logFile.getAbsolutePath(), e));
 		}
+
+		logInfo("initializing");
 		// Starting the queue after the setup is completed
 		queue.createThreads("File logger", 1);
 	}
 
 	public void rotate()
 		throws IOException {
-		System.out.println("FileLogger '" + config.key + "' - rotating files");
+		logInfo("rotating files");
 
 		FileTools.delete(getLogZipFile(config.count - 1));
 
@@ -176,6 +177,7 @@ public class FileLogger
 		File logTextFile = getLogTextFile(index);
 		File logZipFile = getLogZipFile(index);
 		File newLogZipFile = getLogZipFile(index + 1);
+		//        logInfo("Rotating file from: " + index + " ==> " + (index + 1) + "\n");
 
 		try {
 			if (!logTextFile.exists() && !logZipFile.exists())
@@ -186,7 +188,7 @@ public class FileLogger
 
 			FileTools.renameFile(logZipFile, newLogZipFile);
 		} catch (Exception e) {
-			System.err.println("FileLogger '" + config.key + "' - Cannot rotate file from: " + logZipFile.getName() + " ==> " + newLogZipFile.getName() + "\n");
+			logError("Cannot rotate file from: " + logZipFile.getName() + " ==> " + newLogZipFile.getName() + "\n");
 			disable(e);
 		}
 	}
@@ -337,5 +339,19 @@ public class FileLogger
 		public Config_FileLogger clone() {
 			return new Config_FileLogger().setFileName(fileName).setFolder(folder).setCount(count).setSize(size);
 		}
+	}
+
+	public void logInfo(String log) {
+		System.out.println("FileLogger '" + config.key + "' (" + Thread.currentThread().getName() + "): " + log);
+	}
+
+	public void logError(String log) {
+		logError(log, null);
+	}
+
+	public void logError(String log, Throwable e) {
+		System.err.println("FileLogger '" + config.key + "' (" + Thread.currentThread().getName() + "): " + log);
+		if (e != null)
+			e.printStackTrace();
 	}
 }

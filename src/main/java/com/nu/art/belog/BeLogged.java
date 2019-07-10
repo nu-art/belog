@@ -209,7 +209,6 @@ public final class BeLogged {
 		ArrayList<String> _defaultLoggers = new ArrayList<>();
 		for (LoggerConfig config : configsToAdd) {
 			LoggerClient loggerClient = createLoggerFromConfig(config);
-			loggerClient.init();
 			this.logClients.put(config.key, loggerClient);
 
 			if (config.isDefault)

@@ -287,6 +287,8 @@ public final class BeLogged {
 		String tag;
 		if (objectForTag instanceof String)
 			tag = (String) objectForTag;
+		else if (objectForTag instanceof Class)
+			tag = ((Class) objectForTag).getSimpleName();
 		else
 			tag = objectForTag.getClass().getSimpleName();
 		return new Logger().setTag(tag);

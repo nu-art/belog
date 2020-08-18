@@ -90,6 +90,8 @@ public class FileLogger
 		}
 	};
 
+	private FileLoggerRotationListener postRotationListener;
+
 	/**
 	 * Use {@link #setConfig(LoggerConfig)} instead
 	 */
@@ -151,6 +153,9 @@ public class FileLogger
 		File file = getLogTextFile(0);
 		FileTools.delete(file);
 		createLogWriter(file);
+
+		if (postRotationListener != null)
+			postRotationListener.onLogFileRotated(this, getLogTextFile(1));
 	}
 
 	private void createLogWriter(File logFile)
@@ -353,5 +358,20 @@ public class FileLogger
 		System.err.println("FileLogger '" + config.key + "' (" + Thread.currentThread().getName() + "): " + log);
 		if (e != null)
 			e.printStackTrace();
+	}
+
+	public interface FileLoggerRotationListener {
+
+		/**
+		 * ***<b>Any work with the log file should be offloaded to a new thread, instead of the Belog thread.</b>***
+		 *
+		 * @param fileLogger  The FileLogger object that dispatched the rotation event.
+		 * @param rotatedFile The file that just got filled up with log lines over the allowed size aka the "last fully baked" log file.
+		 */
+		void onLogFileRotated(FileLogger fileLogger, File rotatedFile);
+	}
+
+	public void setPostRotationListener(FileLoggerRotationListener postRotationListener) {
+		this.postRotationListener = postRotationListener;
 	}
 }

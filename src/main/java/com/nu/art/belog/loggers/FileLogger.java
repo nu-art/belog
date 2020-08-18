@@ -155,7 +155,7 @@ public class FileLogger
 		createLogWriter(file);
 
 		if (postRotationListener != null)
-			postRotationListener.onLogFileRotated(this, getLogTextFile(1));
+			postRotationListener.onLogFileRotated(this, getLogZipFile(1));
 	}
 
 	private void createLogWriter(File logFile)

@@ -36,7 +36,7 @@ import static com.nu.art.belog.consts.LogLevel.Warning;
 public class Logger
 	implements ILogger {
 
-	private BeLogged beLogged;
+	private transient BeLogged beLogged;
 
 	private String tag = "NotSet";
 
